@@ -1,0 +1,47 @@
+# API Models: USERS
+# These APIModels tell swagger what values to expect.
+
+from flask_restx import fields
+from apis.namespaces import user_api
+
+# OUTPUT fields for showing to the user
+# @api.marshal_with
+
+UGroupFields = user_api.model(
+    'secure_group_view', {
+        'uuid': fields.String( required=False, description='Identifier of the group.'),
+        'name': fields.String( required=True, description='The name of the group.'),
+        'creation_date': fields.String( required=True, description='The creation time for the group.'),
+    }
+)
+
+UserFields = user_api.model(
+    'secure_user_view', {
+        'uuid': fields.String( required=False, description='Identifier of the User.'),
+        'username': fields.String( required=True, description='The username of the user.'),
+        'creation_date': fields.String( required=True, description='The creation time for the user.'),
+        'active': fields.Boolean( required=True, description='Is the account active?'),
+        'email_verified': fields.Boolean( required=True, description='Has the email been verified?' ),
+        'identity_verified': fields.Boolean( required=True, description="Has the user's identity been verified?"),
+        'groups': fields.List(fields.Nested( UGroupFields ))
+    }
+)
+
+# INPUT used for creation of users
+# @api.expect()
+UserCreateFields = user_api.model(
+    'create_user', {
+        'username': fields.String( required=True, description='Username to create.' ),
+        'email': fields.String( required=True, description='Email address of the user being created.' ),
+        'password': fields.String( required=True, description='Password of the user being created.' )
+    }
+)
+
+UserUpdateFields = user_api.model(
+    'update_user', {
+        'username': fields.String( required=True, description='Username to create.' ),
+        'email': fields.String( required=True, description='Email address of the user being created.' ),
+        'password': fields.String( required=True, description='Password of the user being created.' )
+    }
+)
+
