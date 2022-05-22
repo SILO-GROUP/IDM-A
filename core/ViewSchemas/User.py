@@ -4,18 +4,16 @@ from core.ViewSchemas.Group import GroupSchema
 from core.DatabaseModels.User import UserModel
 
 
+# for representation of groups associated with the user
 class NestedGroup(ma.Schema):
     class Meta:
         fields = (
             "name",
             "uuid",
-            'creation_date'
         )
 
 
-
-# this is what's ALLOWED TO BE presented to the user
-# constrained by API MODEL
+# for representation of a user
 class UserSchema(ma.Schema):
     class Meta:
         fields = (

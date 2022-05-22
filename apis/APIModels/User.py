@@ -10,8 +10,7 @@ from apis.namespaces import user_api
 UGroupFields = user_api.model(
     'secure_group_view', {
         'uuid': fields.String( required=False, description='Identifier of the group.'),
-        'name': fields.String( required=True, description='The name of the group.'),
-        'creation_date': fields.String( required=True, description='The creation time for the group.'),
+        'name': fields.String( required=True, description='The name of the group.')
     }
 )
 
