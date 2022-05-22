@@ -44,6 +44,6 @@ GroupUpdateFields = group_api.model(
 GroupMemberModifyFields = group_api.model(
     'modify_group_members',
     {
-        'uuid': fields.String( required=True, description="User UUID to append to this group." )
+        'uuid': fields.String( required=True, description="User UUID to modify this group with." )
     }
 )

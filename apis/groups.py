@@ -63,6 +63,19 @@ class Group(Resource):
 
         return group_schema.dump( result )
 
+    @group_api.param('uuid', 'The group UUID.')
+    @group_api.doc( 'delete_group_uuid' )
+    @group_api.response(404, 'Group not found.')
+    @group_api.response(401, 'Group not empty.')
+    def delete(self, uuid ):
+        '''Delete an empty group.'''
+        group = gcon.get_uuid(  uuid=uuid )
+        if group is None:
+            return 'Group not found.', 404
+
+        if len(group.members) > 0:
+            return 'Refused to delete non-empty group. ', 401
+
 
 @group_api.route('/name/<name>')
 @group_api.param('name', 'The group name.')
@@ -75,11 +88,6 @@ class Group(Resource):
         if group is None:
             return 'Group not found.', 404
         return group_schema.dump(group)
-
-    @group_api.doc( 'delete_group_uuid' )
-    def delete(self, group_uuid ):
-        '''Delete an empty group.'''
-        pass
 
 
 @group_api.route('/uuid/<uuid>/members')
@@ -106,6 +114,25 @@ class Group(Resource):
         return group_schema.dump(result), 201
 
     @group_api.doc('remove_user_from_group')
+    @group_api.expect(GroupMemberModifyFields)
+    @group_api.response(404, 'Group not found.')
+    @group_api.response(401, 'User not in group.')
     def delete( self, uuid ):
         '''Remove a user from a group.'''
-        pass
+        group = gcon.get_uuid( uuid=uuid )
+        if group is None:
+            return 'Group not found.', 404
+
+        ucon = UserController()
+        user = ucon.get_uuid( uuid=request.json['uuid'] )
+
+        if user is None:
+            return 'User not found.', 401
+
+        if user.uuid not in group.members:
+            return 'User is not in that group.', 404
+
+        result = gcon.remove_member( group , user )
+        if result is None:
+            return 'Failed to remove user from group.', 400
+        return group_schema.dump( result ), 200

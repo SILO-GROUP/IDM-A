@@ -55,9 +55,6 @@ class GroupController:
         except exc.IntegrityError:
             return None
 
-    def get_members( self, group ):
-        pass
-
     def add_member(self, group, user ):
         try:
             group.members.append(user)
@@ -67,4 +64,9 @@ class GroupController:
             return None
 
     def remove_member(self, group, user ):
-        pass
+        try:
+            group.members.remove( user )
+            db.session.commit()
+            return group
+        except exc.IntegrityError:
+            return None
