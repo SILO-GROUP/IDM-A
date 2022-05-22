@@ -22,6 +22,7 @@ class Groups(Resource):
 
         return groups_schema.dump(groups)
 
+
 @group_api.route('/create')
 class Group(Resource):
     @group_api.doc('create_group')
@@ -38,6 +39,7 @@ class Group(Resource):
             return 'Failed to create group.', 400
 
         return group_schema.dump(new_group), 201
+
 
 @group_api.route('/uuid/<uuid>')
 @group_api.param('uuid', 'The group UUID.')
@@ -82,11 +84,12 @@ class Group(Resource):
 @group_api.response( 404, 'Group not found.' )
 class Group(Resource):
     @group_api.doc('get_group_byname')
-    def get(self, group_name ):
+    def get(self, name ):
         '''Get group details by group name.'''
-        group = gcon.get_name( name=group_name )
+        group = gcon.get_name( name=name )
         if group is None:
             return 'Group not found.', 404
+
         return group_schema.dump(group)
 
 

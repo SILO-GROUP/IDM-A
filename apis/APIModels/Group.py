@@ -23,7 +23,7 @@ GroupFields = group_api.model(
         'uuid': fields.String( required=False, description='Identifier of the group.'),
         'name': fields.String( required=True, description='The name of the group.'),
         'creation_date': fields.String( required=True, description='The creation time for the group.'),
-        'members': fields.List( fields.Nested(MemberFields, many=True) )
+        'members': fields.List( fields.Nested( MemberFields, many=True, exclude='groups') )
     }
 )
 

@@ -23,7 +23,7 @@ class GroupController:
         return group
 
     def get_name( self, name ):
-        group = db.session.query(GroupModel).filter_by( name=name).first()
+        group = db.session.query(GroupModel).filter_by(name=name).first()
         if group is None:
             return None
         return group

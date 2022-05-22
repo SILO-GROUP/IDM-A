@@ -26,66 +26,16 @@ def generate_uuid():
 class UserModel(db.Model):
     __tablename__ = 'user'
 
-    id =        Column(
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
-
-    uuid = Column(
-        String(37),
-        name="uuid",
-        default=generate_uuid,
-        nullable=False,
-        unique=True
-    )
-
-    email = Column(
-        String(100),
-        nullable=False,
-        unique=True
-    )
-
-    username =  Column(
-        String(50),
-        unique=True,
-        nullable=False
-    )
-
-    password = Column(
-        String(100),
-        nullable=False
-    )
-
-    active = Column(
-        Boolean(),
-        default=False,
-    )
-
-    email_verified = Column(
-        Boolean(),
-        default=False,
-    )
-
-    identity_verified = Column(
-        Boolean(),
-        default=False,
-    )
-
-    creation_date = Column(
-        TIMESTAMP,
-        default=datetime.utcnow,
-        nullable=False
-    )
-
-    UniqueConstraint(
-        'id',
-        'username',
-        'uuid',
-        'email'
-    )
-
+    id = Column( Integer, primary_key=True, autoincrement=True, nullable=False )
+    uuid = Column( String(37), name="uuid", default=generate_uuid, nullable=False, unique=True )
+    email = Column( String(100), nullable=False, unique=True )
+    username =  Column( String(50), unique=True, nullable=False )
+    password = Column( String(100), nullable=False )
+    active = Column( Boolean(), default=False, )
+    email_verified = Column( Boolean(), default=False )
+    identity_verified = Column( Boolean(), default=False )
+    creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
+    UniqueConstraint( 'id', 'username', 'uuid', 'email' )
     groups = relationship( 'GroupModel', secondary=user_group_relations, back_populates="members" )
 
     def __repr__(self):

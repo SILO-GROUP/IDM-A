@@ -83,6 +83,7 @@ class User(Resource):
 @user_api.route('/uuid/<uuid>')
 @user_api.param('uuid', "The user's UUID.")
 @user_api.response(404, 'User not found.')
+@user_api.response(code=200, model=UserFields, description='')
 class User(Resource):
     @user_api.doc('get_user_uuid')
     def get( self, uuid ):

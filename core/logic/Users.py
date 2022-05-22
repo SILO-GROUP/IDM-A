@@ -53,6 +53,9 @@ class UserController:
             return user
         except exc.IntegrityError:
             return None
+        except exc.PendingRollbackError:
+            print("Unique Constraint failure...")
+            return None
 
     def update( self, user, username=None, email=None, password=None ):
         if user is None:

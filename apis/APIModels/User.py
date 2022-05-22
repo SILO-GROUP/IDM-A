@@ -23,7 +23,7 @@ UserFields = user_api.model(
         'active': fields.Boolean( required=True, description='Is the account active?'),
         'email_verified': fields.Boolean( required=True, description='Has the email been verified?' ),
         'identity_verified': fields.Boolean( required=True, description="Has the user's identity been verified?"),
-        'groups': fields.List(fields.Nested( UGroupFields ))
+        'groups': fields.List( fields.Nested( UGroupFields, many=True ))
     }
 )
 
