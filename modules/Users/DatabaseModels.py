@@ -1,6 +1,6 @@
-from core.Pantheon.AppFactory import db
-from core.Groups.Associations import user_group_relations
-from core.Sessions.Associations import user_session_relations
+from modules.Pantheon.Factory import db
+from modules.Groups.Associations import user_group_relations
+from modules.Sessions.Associations import user_session_relations
 from sqlalchemy.orm import relationship
 from sqlalchemy import UniqueConstraint, Boolean, Column, Integer, String, TIMESTAMP
 import uuid

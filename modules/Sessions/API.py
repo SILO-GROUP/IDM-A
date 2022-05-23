@@ -1,9 +1,10 @@
 from flask_restx import Resource
 from flask import request
 
-from core.Sessions.APIModels import SessionFields, SessionCreateFields, InsecureSessionFields
-from core.Pantheon.Namespaces import session_api
-from core.Sessions.Controller import SessionController
+from modules.Sessions.APIModels import SessionFields, SessionCreateFields, InsecureSessionFields
+from modules.Pantheon.Namespaces import session_api
+from modules.Sessions.Controller import SessionController
+from modules.Sessions.ViewSchemas import session_schema, sessions_schema
 
 scon = SessionController()
 

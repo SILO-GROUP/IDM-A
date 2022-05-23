@@ -2,7 +2,7 @@
 # These APIModels tell swagger what values to expect.
 
 from flask_restx import fields
-from core.Pantheon.Namespaces import user_api
+from modules.Pantheon.Namespaces import user_api
 
 # OUTPUT fields for showing to the user
 # @api.marshal_with

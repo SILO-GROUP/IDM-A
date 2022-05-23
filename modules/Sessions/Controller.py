@@ -1,5 +1,5 @@
-from core.Sessions.DatabaseModels import SessionModel
-from core.Users.Controller import UserController
+from modules.Sessions.DatabaseModels import SessionModel
+from modules.Users.Controller import UserController
 from sqlalchemy import exc
 # data validation happens _here_
 # input sanitization happens here, too.

@@ -1,5 +1,5 @@
-from core.Pantheon import db
-from core.Sessions.Associations import user_session_relations
+from modules.Pantheon.Factory import db
+from modules.Sessions.Associations import user_session_relations
 from sqlalchemy import Column, Integer, String, UniqueConstraint, TIMESTAMP
 from sqlalchemy.orm import relationship
 import uuid

@@ -1,8 +1,8 @@
-from core.Pantheon import db
+from modules.Pantheon.Factory import db
 from sqlalchemy import Column, Integer, String, UniqueConstraint, TIMESTAMP
 import uuid
 from datetime import datetime
-from core.Groups.Associations import user_group_relations
+from modules.Groups.Associations import user_group_relations
 from sqlalchemy.orm import relationship
 
 

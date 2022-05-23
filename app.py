@@ -1,4 +1,4 @@
-from core.Pantheon import api, app
+from modules.Pantheon import api, app
 
 api.init_app(app)
 

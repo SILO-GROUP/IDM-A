@@ -2,7 +2,7 @@
 # These APIModels tell swagger what values to expect.
 
 from flask_restx import fields
-from core.Pantheon.Namespaces import session_api
+from modules.Pantheon.Namespaces import session_api
 
 SessionCreateFields = session_api.model(
     'create_session',
