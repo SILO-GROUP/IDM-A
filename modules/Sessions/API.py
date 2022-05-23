@@ -21,6 +21,7 @@ class Sessions(Resource):
 
         return sessions_schema.dump(sessions)
 
+
 @session_api.route('/create')
 class Sessions(Resource):
     @session_api.doc('create_session')

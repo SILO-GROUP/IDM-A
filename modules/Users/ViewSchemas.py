@@ -15,6 +15,7 @@ class NestedSession(ma.Schema):
     class Meta:
         fields = (
             'uuid',
+            'creation_date'
         )
 
 

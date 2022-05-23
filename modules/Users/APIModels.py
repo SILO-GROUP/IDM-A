@@ -8,7 +8,8 @@ from modules.Pantheon.Namespaces import user_api
 # @api.marshal_with
 USessionFields = user_api.model(
     'embedded_session_view', {
-        'uuid': fields.String( required=True, description='UUID of the session.' )
+        'uuid': fields.String( required=True, description='UUID of the session.' ),
+        'creation_date': fields.String( required=True, description='The creation time for the session.')
     }
 )
 
