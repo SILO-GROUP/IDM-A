@@ -8,7 +8,7 @@
 
 ## Setup Environment
 
-(Optional) - Setup `venv`:
+### (Optional) - Setup `venv`
 
 ```
 export VENV_ROOT=~/.local/venvs # Set to wherever you would like to manage your venvs
@@ -17,7 +17,7 @@ python -m venv $VENV_ROOT/silo-idm-a
 . $VENV_ROOT/silo-idm-a/bin/activate
 ```
 
-(Optional) - Setup `virtualenvwrapper` environment:
+### (Optional) - Setup `virtualenvwrapper` environment
 
 Refer to setup instructions [here](https://github.com/bernardobarreto/virtualenvwrapper/blob/master/virtualenvwrapper.sh#L31)
 
@@ -26,14 +26,14 @@ mkvirtualenv silo-idm-a
 workon silo-idm-a
 ```
 
-Install requirements:
+### Install requirements
 
 ```
 pip install -r requirements-dev.txt
 pip install -r requirements.txt
 ```
 
-Setup and run server:
+### Setup and run server
 
 ```
 cd scripts && ./reset.bash
