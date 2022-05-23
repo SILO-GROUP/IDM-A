@@ -34,7 +34,3 @@ pytz==2022.1
 six==1.16.0
 SQLAlchemy==1.4.36
 stevedore==3.5.0
-virtualenv==20.14.1
-virtualenv-clone==0.5.7
-virtualenvwrapper==4.8.4
-Werkzeug==2.1.2
