@@ -8,7 +8,7 @@
 
 ## Setup Environment
 
-### (Optional) - Setup `venv`
+### (Optional) - Setup `venv` environment
 
 ```
 export VENV_ROOT=~/.local/venvs # Set to wherever you would like to manage your venvs
@@ -33,7 +33,7 @@ pip install -r requirements-dev.txt
 pip install -r requirements.txt
 ```
 
-### Setup and run server
+### Setup and run server
 
 ```
 cd scripts && ./reset.bash
