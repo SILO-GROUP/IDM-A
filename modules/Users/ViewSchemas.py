@@ -11,6 +11,13 @@ class NestedGroup(ma.Schema):
         )
 
 
+class NestedSession(ma.Schema):
+    class Meta:
+        fields = (
+            'uuid',
+        )
+
+
 # for representation of a user
 class UserSchema(ma.Schema):
     class Meta:
@@ -22,9 +29,11 @@ class UserSchema(ma.Schema):
             'identity_verified',
             'creation_date',
             'active',
-            'groups'
+            'groups',
+            'sessions',
         )
     groups = fields.Nested( NestedGroup, many=True )
+    sessions = fields.Nested( NestedSession, many=True )
 
 
 user_schema = UserSchema()

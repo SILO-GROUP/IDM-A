@@ -3,7 +3,7 @@ from modules.Groups.Associations import user_group_relations
 from modules.Sessions.Associations import user_session_relations
 from sqlalchemy.orm import relationship
 from sqlalchemy import UniqueConstraint, Boolean, Column, Integer, String, TIMESTAMP
-import uuid
+from uuid import uuid4
 from datetime import datetime
 
 # db.Model = DB Interface, Table Structure
@@ -20,7 +20,7 @@ from datetime import datetime
 
 
 def generate_uuid():
-    return str(uuid.uuid4())
+    return str(uuid4())
 
 
 # the model to interface with the database
@@ -38,7 +38,8 @@ class UserModel(db.Model):
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
     UniqueConstraint( 'id', 'username', 'uuid', 'email' )
     groups = relationship( 'GroupModel', secondary=user_group_relations, back_populates="members" )
-    sessions = relationship( 'SessionModel', secondary=user_session_relations, back_populates="user" )
+    #sessions = relationship( 'SessionModel', back_populates="user", cascade="all, delete", passive_deletes=True )
+    sessions = relationship( 'SessionModel', backref="user", cascade="all, delete", passive_deletes=True )
 
     def __repr__(self):
         return '<User %s>' % self.uuid

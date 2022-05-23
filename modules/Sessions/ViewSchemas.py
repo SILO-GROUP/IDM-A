@@ -1,4 +1,7 @@
 from modules.Pantheon.Factory import ma
+from modules.Sessions.DatabaseModels import SessionModel
+from modules.Users.DatabaseModels import UserModel
+from modules.Groups.DatabaseModels import GroupModel
 from marshmallow_sqlalchemy import fields
 
 
@@ -6,6 +9,7 @@ from marshmallow_sqlalchemy import fields
 # constrained by API MODEL
 class NestedGroups(ma.Schema):
     class Meta:
+        model = GroupModel
         fields = (
             "name",
             "uuid",
@@ -16,6 +20,7 @@ class NestedGroups(ma.Schema):
 # constrained by API MODEL
 class NestedUser(ma.Schema):
     class Meta:
+        model = UserModel
         fields = (
             "username",
             "uuid",
@@ -28,13 +33,14 @@ class NestedUser(ma.Schema):
 # constrained by API MODEL
 class SessionSchema(ma.Schema):
     class Meta:
+        model = SessionModel
         fields = (
             "name",
             "uuid",
             'creation_date',
             'user'
         )
-    user = fields.Nested( NestedUser, many=True )
+    user = fields.Nested( NestedUser, many=False )
 
 
 session_schema = SessionSchema()

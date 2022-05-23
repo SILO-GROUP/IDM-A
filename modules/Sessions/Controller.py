@@ -1,3 +1,4 @@
+from modules.Pantheon.Factory import db
 from modules.Sessions.DatabaseModels import SessionModel
 from modules.Users.Controller import UserController
 from sqlalchemy import exc
@@ -19,16 +20,20 @@ class SessionController:
         ucon = UserController()
         user = ucon.get_uuid( uuid )
         if user is None:
+            print("User not found.")
             return None
+        else:
+            print("User UUID: {0}".format(user.uuid))
 
         try:
-            session = SessionModel()
+            session = SessionModel(user_uuid=user.uuid)
             db.session.add(session)
             db.session.commit()
 
             return session
-        except exc.IntegrityError:
-            return None
+ #       except exc.IntegrityError:
+ #           print("Integrity error...")
+ #           return None
         except exc.PendingRollbackError:
             print("Constraint failure?")
             return None

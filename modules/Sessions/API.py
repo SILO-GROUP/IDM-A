@@ -13,7 +13,6 @@ scon = SessionController()
 class Sessions(Resource):
     @session_api.doc('list_sessions')
     @session_api.marshal_list_with(InsecureSessionFields)
-    @session_api.marshal_list_with(SessionFields)
     def get(self):
         '''List all Sessions.'''
         sessions = scon.get_all()

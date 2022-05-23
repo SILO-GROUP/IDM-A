@@ -1,4 +1,5 @@
 from modules.Groups.DatabaseModels import GroupModel
+from modules.Pantheon.Factory import db
 from sqlalchemy import exc
 # data validation happens _here_
 # input sanitization happens here, too.

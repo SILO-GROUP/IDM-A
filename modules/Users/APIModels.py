@@ -6,6 +6,12 @@ from modules.Pantheon.Namespaces import user_api
 
 # OUTPUT fields for showing to the user
 # @api.marshal_with
+USessionFields = user_api.model(
+    'embedded_session_view', {
+        'uuid': fields.String( required=True, description='UUID of the session.' )
+    }
+)
+
 
 UGroupFields = user_api.model(
     'secure_group_view', {
@@ -22,7 +28,8 @@ UserFields = user_api.model(
         'active': fields.Boolean( required=True, description='Is the account active?'),
         'email_verified': fields.Boolean( required=True, description='Has the email been verified?' ),
         'identity_verified': fields.Boolean( required=True, description="Has the user's identity been verified?"),
-        'groups': fields.List( fields.Nested( UGroupFields, many=True ))
+        'groups': fields.List( fields.Nested( UGroupFields, many=True )),
+        'sessions': fields.List( fields.Nested( USessionFields, many=True )),
     }
 )
 

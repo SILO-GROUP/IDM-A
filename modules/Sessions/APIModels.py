@@ -30,7 +30,7 @@ UGroupFields = session_api.model(
 
 # OUTPUT fields for showing to the group
 # @api.marshal_with
-UserFields = session_api.model(
+SessionEmbeddedUser = session_api.model(
     'secure_user_view_session', {
         'uuid': fields.String( required=False, description='Identifier of the User.'),
         'username': fields.String( required=True, description='The username of the user.'),
@@ -44,6 +44,6 @@ InsecureSessionFields = session_api.model(
     {
         'uuid': fields.String( required=True, description="The session UUID."),
         'creation_date': fields.String(required=True, description="Creation time of the session."),
-        'user': fields.List( fields.Nested( UserFields, many=True, exclude='groups') )
+        'user': fields.Nested( SessionEmbeddedUser, many=False)
     }
 )
