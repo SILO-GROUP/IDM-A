@@ -1,5 +1,4 @@
-from apis import api
-from core.Pantheon.AppFactory import app
+from core.Pantheon import api, app
 
 api.init_app(app)
 

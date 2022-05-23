@@ -1,6 +1,5 @@
-from core.Pantheon.AppFactory import db
-from sqlalchemy import Column, Integer, String, UniqueConstraint, Table, ForeignKey, TIMESTAMP
-import uuid
+from core.Pantheon import db
+from sqlalchemy import Column, Table, ForeignKey, TIMESTAMP
 from datetime import datetime
 
 user_group_relations = Table(

@@ -1,10 +1,11 @@
-from sqlalchemy.orm import relationship
-
 from core.Pantheon.AppFactory import db
-from sqlalchemy import Column, Integer, String, TIMESTAMP, UniqueConstraint, Boolean
+from core.Groups.Associations import user_group_relations
+from core.Sessions.Associations import user_session_relations
+from sqlalchemy.orm import relationship
+from sqlalchemy import UniqueConstraint, Boolean, Column, Integer, String, TIMESTAMP
 import uuid
 from datetime import datetime
-from core.DatabaseModels.UserGroupAssociations import *
+
 # db.Model = DB Interface, Table Structure
 # api.model = Tells Swagger what to use w/ @api.expect
 #   or @api.marshal_list_with
@@ -37,6 +38,7 @@ class UserModel(db.Model):
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
     UniqueConstraint( 'id', 'username', 'uuid', 'email' )
     groups = relationship( 'GroupModel', secondary=user_group_relations, back_populates="members" )
+    sessions = relationship( 'SessionModel', secondary=user_session_relations, back_populates="user" )
 
     def __repr__(self):
         return '<User %s>' % self.uuid

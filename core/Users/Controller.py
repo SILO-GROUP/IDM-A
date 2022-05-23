@@ -1,6 +1,5 @@
-from core.Pantheon.AppFactory import *
-from core.ViewSchemas.User import user_schema, users_schema
-from core.DatabaseModels.User import UserModel
+from core.Pantheon.AppFactory import db
+from core.Users.DatabaseModels import UserModel
 from sqlalchemy import exc
 # data validation happens _here_
 # input sanitization happens here, too.

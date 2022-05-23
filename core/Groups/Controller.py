@@ -1,6 +1,4 @@
-from core.Pantheon.AppFactory import *
-from core.ViewSchemas.Group import group_schema, groups_schema
-from core.DatabaseModels.Group import GroupModel
+from core.Groups.DatabaseModels import GroupModel
 from sqlalchemy import exc
 # data validation happens _here_
 # input sanitization happens here, too.

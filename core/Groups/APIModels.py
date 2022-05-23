@@ -2,7 +2,7 @@
 # These APIModels tell swagger what values to expect.
 
 from flask_restx import fields
-from apis.namespaces import group_api
+from core.Pantheon.Namespaces import group_api
 
 
 # OUTPUT fields for showing to the group

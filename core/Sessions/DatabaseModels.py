@@ -1,28 +1,26 @@
-from core.Pantheon.AppFactory import db
+from core.Pantheon import db
+from core.Sessions.Associations import user_session_relations
 from sqlalchemy import Column, Integer, String, UniqueConstraint, TIMESTAMP
+from sqlalchemy.orm import relationship
 import uuid
 from datetime import datetime
-from core.DatabaseModels.UserGroupAssociations import user_group_relations
-from sqlalchemy.orm import relationship
 
 
 def generate_uuid():
     return str(uuid.uuid4())
 
 
-class GroupModel(db.Model):
-    __tablename__ = 'group'
+class SessionModel(db.Model):
+    __tablename__ = 'session'
 
     id =  Column( Integer, primary_key=True, autoincrement=True, nullable=False )
     uuid = Column( String(37), name="uuid", default=generate_uuid, nullable=False, unique=True )
-    name = Column( String(100), unique=True, nullable=False )
-
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
 
-    UniqueConstraint( 'id', 'uuid', 'name' )
+    UniqueConstraint( 'id', 'uuid' )
 
-    members = relationship( 'UserModel', secondary=user_group_relations, back_populates="groups" )
+    user = relationship( 'UserModel', secondary=user_session_relations, back_populates="sessions" )
 
     def __repr__(self):
-        return '<Group %s>' % self.uuid
+        return '<Session %s>' % self.uuid
 

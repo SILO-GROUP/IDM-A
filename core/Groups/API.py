@@ -1,11 +1,11 @@
 from flask_restx import Resource
 from flask import request
 
-from apis.APIModels.Group import GroupFields, GroupCreateFields, GroupUpdateFields, GroupMemberModifyFields
-from apis.namespaces import group_api
-from core.logic.Groups import GroupController
-from core.logic.Users import UserController
-from core.ViewSchemas.Group import *
+from core.Groups.APIModels import GroupFields, GroupCreateFields, GroupMemberModifyFields
+from core.Pantheon.Namespaces import group_api
+from core.Groups.Controller import GroupController
+from core.Users.Controller import UserController
+
 
 gcon = GroupController()
 

@@ -1,7 +1,5 @@
 from core.Pantheon.AppFactory import ma
 from marshmallow_sqlalchemy import fields
-from core.ViewSchemas.Group import GroupSchema
-from core.DatabaseModels.User import UserModel
 
 
 # for representation of groups associated with the user

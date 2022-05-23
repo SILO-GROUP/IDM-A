@@ -1,4 +1,4 @@
-from core.Pantheon.AppFactory import ma
+from core.Pantheon import ma
 from marshmallow_sqlalchemy import fields
 
 

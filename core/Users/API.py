@@ -1,10 +1,11 @@
 from flask_restx import Resource
 from flask import request
 
-from apis.APIModels.User import UserFields, UserCreateFields, UserUpdateFields
-from apis.namespaces import user_api
-from core.logic.Users import UserController
-from core.ViewSchemas.User import *
+from core.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
+from core.Pantheon.Namespaces import user_api
+
+from core.Users import UserController
+from core.Users import user_schema, users_schema
 
 ucon = UserController()
 
