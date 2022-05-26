@@ -37,3 +37,7 @@ class SessionController:
         except exc.PendingRollbackError:
             print("Constraint failure?")
             return None
+
+    def get_token( self, token ):
+        session = db.session.query(SessionModel).filter_by( uuid=token ).first()
+        return session

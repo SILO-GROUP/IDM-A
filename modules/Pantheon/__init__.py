@@ -1,4 +1,5 @@
 from flask_restx import Api
+from flask import request
 from modules.Users.API import user_api
 from modules.Groups.API import group_api
 from modules.Sessions.API import session_api

@@ -3,11 +3,27 @@ from flask import request
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
 from modules.Pantheon.Namespaces import user_api
-
+from modules.Pantheon.Factory import app
 from modules.Users.Controller import UserController
+from modules.Sessions.Controller import SessionController
 from modules.Users.ViewSchemas import user_schema, users_schema
 
 ucon = UserController()
+scon = SessionController()
+
+
+@app.before_request
+def fetch_requestor_context():
+    app.context_flag = True
+
+    auth_header = request.headers.get('Authorization')
+    if auth_header and len( auth_header.split(" ") ) == 2:
+        token = auth_header.split(" ")[1]
+    else:
+        token = ''
+        app.session = None
+    if token:
+        app.session = scon.get_token( token=token )
 
 
 @user_api.route('/all')
