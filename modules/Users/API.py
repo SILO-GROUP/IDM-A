@@ -1,5 +1,6 @@
 from flask_restx import Resource
 from flask import request
+from flask import g
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
 from modules.Pantheon.Namespaces import user_api
@@ -14,16 +15,16 @@ scon = SessionController()
 
 @app.before_request
 def fetch_requestor_context():
-    app.context_flag = True
+    g.context_flag = True
 
     auth_header = request.headers.get('Authorization')
     if auth_header and len( auth_header.split(" ") ) == 2:
         token = auth_header.split(" ")[1]
     else:
         token = ''
-        app.session = None
+        g.session = None
     if token:
-        app.session = scon.get_token( token=token )
+        g.session = scon.get_token( token=token )
 
 
 @user_api.route('/all')
