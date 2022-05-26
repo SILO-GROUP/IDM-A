@@ -3,38 +3,22 @@ from flask_restx import Resource
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
 from modules.Pantheon.Namespaces import user_api
-from modules.Pantheon.Factory import app
-from modules.Users.Controller import UserController
-from modules.Sessions.Controller import SessionController
+from modules.Users.Controller import user_controller
+from modules.Sessions.Controller import session_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
-
-# consider making these all static
-ucon = UserController()
-scon = SessionController()
-
-
-# consider moving this to a global context or at least to session module
-@app.before_request
-def fetch_requestor_context():
-    g.context_flag = True
-
-    auth_header = request.headers.get('Authorization')
-    if auth_header and len( auth_header.split(" ") ) == 2:
-        token = auth_header.split(" ")[1]
-    else:
-        token = ''
-        g.session = None
-    if token:
-        g.session = scon.get_token( token=token )
+from modules.Sessions.Decorators import *
+from modules.Groups.Decorators import *
 
 
 @user_api.route('/all')
 class Users(Resource):
     @user_api.doc('list_users')
+    @require_session
+    @require_group('wheel')
     @user_api.marshal_list_with(UserFields)
     def get(self):
         '''List all users.'''
-        users = ucon.get_all()
+        users = user_controller.get_all()
         if users is None:
             return 'No users found.', 404
 
@@ -49,7 +33,7 @@ class User(Resource):
     @user_api.response(400, 'Failed to create user.')
     def post( self ):
         '''Create a user.'''
-        new_user = ucon.create(
+        new_user = user_controller.create(
             username=request.json['username'],
             email=request.json['email'],
             password=request.json['password']
@@ -67,7 +51,7 @@ class User(Resource):
     @user_api.doc('get_user_id')
     def get(self, id):
         '''Fetch a user given its identifier.'''
-        user = ucon.get_id(id=id)
+        user = user_controller.get_id(id=id)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump(user)
@@ -80,7 +64,7 @@ class User(Resource):
     @user_api.doc('get_user_username')
     def get( self, username ):
         '''Fetch a user given its username.'''
-        user = ucon.get_username( username=username )
+        user = user_controller.get_username(username=username)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump(user)
@@ -93,7 +77,7 @@ class User(Resource):
     @user_api.doc('get_user_email')
     def get( self, email ):
         '''Fetch a user given its email address.'''
-        user = ucon.get_email( email=email )
+        user = user_controller.get_email(email=email)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump( user )
@@ -107,7 +91,7 @@ class User(Resource):
     @user_api.doc('get_user_uuid')
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
-        user = ucon.get_uuid( uuid=uuid )
+        user = user_controller.get_uuid(uuid=uuid)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump(user)
@@ -118,7 +102,7 @@ class User(Resource):
     def put( self, uuid ):
         '''Update a user's attributes.'''
 
-        user = ucon.get_uuid( uuid=uuid )
+        user = user_controller.get_uuid(uuid=uuid)
         if user is None:
             return "User not found.", 404
 
@@ -133,7 +117,7 @@ class User(Resource):
         if 'password' in request.json:
             password=request.json['password']
 
-        user_result = ucon.update( user, username, email, password )
+        user_result = user_controller.update(user, username, email, password)
 
         if user_result is None:
             return "Failed to update user.", 400

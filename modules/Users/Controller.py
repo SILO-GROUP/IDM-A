@@ -80,3 +80,6 @@ class UserController:
 
     def email_verified( self, user ):
         pass
+
+
+user_controller = UserController()

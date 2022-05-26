@@ -1,12 +1,13 @@
 from flask_restx import Resource
-from flask import request
-
+from flask import request, g
+from functools import wraps
+from modules.Pantheon.Factory import app
 from modules.Sessions.APIModels import SessionFields, SessionCreateFields, InsecureSessionFields
 from modules.Pantheon.Namespaces import session_api
-from modules.Sessions.Controller import SessionController
+from modules.Sessions.Controller import session_controller
 from modules.Sessions.ViewSchemas import session_schema, sessions_schema
 
-scon = SessionController()
+
 
 
 @session_api.route('/all')
@@ -15,7 +16,7 @@ class Sessions(Resource):
     @session_api.marshal_list_with(InsecureSessionFields)
     def get(self):
         '''List all Sessions.'''
-        sessions = scon.get_all()
+        sessions = session_controller.get_all()
         if sessions is None:
             return 'No sessions found.', 404
 
@@ -30,7 +31,7 @@ class Sessions(Resource):
     @session_api.response(400, 'Failed to create session.')
     def post(self):
         '''Create a session.'''
-        session = scon.create( uuid=request.json['uuid'], password=request.json['password'] )
+        session = session_controller.create( uuid=request.json['uuid'], password=request.json['password'] )
         if session is None:
             return 'No session could be created.', 401
 

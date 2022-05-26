@@ -41,3 +41,6 @@ class SessionController:
     def get_token( self, token ):
         session = db.session.query(SessionModel).filter_by( uuid=token ).first()
         return session
+
+
+session_controller = SessionController()

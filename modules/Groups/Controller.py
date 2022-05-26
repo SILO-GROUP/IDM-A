@@ -69,3 +69,6 @@ class GroupController:
             return group
         except exc.IntegrityError:
             return None
+
+
+group_controller = GroupController()

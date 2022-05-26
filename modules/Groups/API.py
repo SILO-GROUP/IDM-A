@@ -1,13 +1,11 @@
 from flask_restx import Resource
-from flask import request
+from flask import request, g
 
 from modules.Groups.APIModels import GroupFields, GroupCreateFields, GroupMemberModifyFields
 from modules.Pantheon.Namespaces import group_api
-from modules.Groups.Controller import GroupController
-from modules.Users.Controller import UserController
+from modules.Groups.Controller import group_controller
 from modules.Groups.ViewSchemas import group_schema, groups_schema
-
-gcon = GroupController()
+from modules.Groups.Decorators import *
 
 
 @group_api.route('/all')
@@ -16,7 +14,7 @@ class Groups(Resource):
     @group_api.marshal_list_with(GroupFields)
     def get(self):
         '''List all groups.'''
-        groups = gcon.get_all()
+        groups = group_controller.get_all()
         if groups is None:
             return 'No groups found.', 404
 
@@ -31,7 +29,7 @@ class Group(Resource):
     @group_api.response( 400, 'Failed to create group.' )
     def post( self ):
         '''Create a group.'''
-        new_group = gcon.create(
+        new_group = group_controller.create(
             name=request.json['name']
         )
 
@@ -48,18 +46,18 @@ class Group(Resource):
     @group_api.doc('get_group_uuid')
     def get(self, group_uuid ):
         '''Get group details by group UUID.'''
-        group = gcon.get_uuid( uuid=group_uuid )
+        group = group_controller.get_uuid(uuid=group_uuid)
         if group is None:
             return 'Group not found.', 404
         return group_schema.dump(group)
 
     def put( self, group_uuid ):
         '''Rename a group.'''
-        group = gcon.get_uuid( uuid=group_uuid )
+        group = group_controller.get_uuid(uuid=group_uuid)
         if group is None:
             return 'Group not found.', 404
 
-        result = gcon.update( group, request.json['name'] )
+        result = group_controller.update(group, request.json['name'])
         if result is None:
             return 'Failed to update group.', 400
 
@@ -71,7 +69,7 @@ class Group(Resource):
     @group_api.response(401, 'Group not empty.')
     def delete(self, uuid ):
         '''Delete an empty group.'''
-        group = gcon.get_uuid(  uuid=uuid )
+        group = group_controller.get_uuid(uuid=uuid)
         if group is None:
             return 'Group not found.', 404
 
@@ -86,7 +84,7 @@ class Group(Resource):
     @group_api.doc('get_group_byname')
     def get(self, name ):
         '''Get group details by group name.'''
-        group = gcon.get_name( name=name )
+        group = group_controller.get_name(name=name)
         if group is None:
             return 'Group not found.', 404
 
@@ -101,7 +99,7 @@ class Group(Resource):
     @group_api.expect(GroupMemberModifyFields)
     def put(self, uuid ):
         '''Add a user to a group.'''
-        group = gcon.get_uuid( uuid=uuid )
+        group = group_controller.get_uuid(uuid=uuid)
         if group is None:
             return 'Group not found.', 404
 
@@ -111,7 +109,7 @@ class Group(Resource):
         if user is None:
             return 'User not found.', 401
 
-        result = gcon.add_member( group=group, user=user )
+        result = group_controller.add_member(group=group, user=user)
         if result is None:
             return 'Failed to append group.', 400
         return group_schema.dump(result), 201
@@ -122,7 +120,7 @@ class Group(Resource):
     @group_api.response(401, 'User not in group.')
     def delete( self, uuid ):
         '''Remove a user from a group.'''
-        group = gcon.get_uuid( uuid=uuid )
+        group = group_controller.get_uuid(uuid=uuid)
         if group is None:
             return 'Group not found.', 404
 
@@ -135,7 +133,7 @@ class Group(Resource):
         if user.uuid not in group.members:
             return 'User is not in that group.', 404
 
-        result = gcon.remove_member( group , user )
+        result = group_controller.remove_member(group, user)
         if result is None:
             return 'Failed to remove user from group.', 400
         return group_schema.dump( result ), 200
