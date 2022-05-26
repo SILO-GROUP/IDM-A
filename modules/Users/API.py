@@ -1,6 +1,5 @@
+from flask import request, g
 from flask_restx import Resource
-from flask import request
-from flask import g
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
 from modules.Pantheon.Namespaces import user_api
@@ -9,10 +8,12 @@ from modules.Users.Controller import UserController
 from modules.Sessions.Controller import SessionController
 from modules.Users.ViewSchemas import user_schema, users_schema
 
+# consider making these all static
 ucon = UserController()
 scon = SessionController()
 
 
+# consider moving this to a global context or at least to session module
 @app.before_request
 def fetch_requestor_context():
     g.context_flag = True
