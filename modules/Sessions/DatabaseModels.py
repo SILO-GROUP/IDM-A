@@ -14,14 +14,16 @@ class SessionModel(db.Model):
     __tablename__ = 'session'
 
     id =  Column( Integer, primary_key=True, autoincrement=True, nullable=False )
-    uuid = Column( String(37), name="uuid", default=generate_uuid, nullable=False, unique=True )
+    suid = Column(String(37), default=generate_uuid, nullable=False, unique=True)
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
 
-    user_uuid = Column( String(37), ForeignKey('user.uuid', ondelete="CASCADE" ), nullable=False, unique=True )
+    # MTO
+    owner_id = Column(String(37), ForeignKey('user.uuid', ondelete="CASCADE"), nullable=False, unique=True)
+    # owner = relationship( 'UserModel', backref="sessions")
     # user = relationship( 'UserModel', back_populates="sessions" )
     # user = relationship( 'UserModel', backref="sessions" )
-    UniqueConstraint( 'id', 'uuid' )
+    UniqueConstraint( 'id', 'suid' )
 
     def __repr__(self):
-        return '<Session %s>' % self.uuid
+        return '<Session %s>' % self.suid
 

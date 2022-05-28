@@ -9,6 +9,9 @@ from modules.Users.ViewSchemas import user_schema, users_schema
 from modules.Sessions.Decorators import *
 from modules.Groups.Decorators import *
 
+# create credits module
+# create restrictions module
+
 
 @user_api.route('/all')
 class Users(Resource):

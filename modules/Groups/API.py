@@ -6,8 +6,11 @@ from modules.Pantheon.Namespaces import group_api
 from modules.Groups.Controller import group_controller
 from modules.Groups.ViewSchemas import group_schema, groups_schema
 from modules.Groups.Decorators import *
+from modules.Sessions.Decorators import *
 
 
+@require_session
+@require_group('wheel')
 @group_api.route('/all')
 class Groups(Resource):
     @group_api.doc('list_groups')
@@ -130,7 +133,7 @@ class Group(Resource):
         if user is None:
             return 'User not found.', 401
 
-        if user.uuid not in group.members:
+        if user.suid not in group.members:
             return 'User is not in that group.', 404
 
         result = group_controller.remove_member(group, user)

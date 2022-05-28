@@ -1,6 +1,5 @@
 from modules.Pantheon.Factory import db
 from modules.Groups.Associations import user_group_relations
-from modules.Sessions.Associations import user_session_relations
 from sqlalchemy.orm import relationship
 from sqlalchemy import UniqueConstraint, Boolean, Column, Integer, String, TIMESTAMP
 from uuid import uuid4
@@ -37,9 +36,10 @@ class UserModel(db.Model):
     identity_verified = Column( Boolean(), default=False )
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
     UniqueConstraint( 'id', 'username', 'uuid', 'email' )
+    # MTM
     groups = relationship( 'GroupModel', secondary=user_group_relations, back_populates="members" )
-    #sessions = relationship( 'SessionModel', back_populates="user", cascade="all, delete", passive_deletes=True )
-    sessions = relationship( 'SessionModel', backref="user", cascade="all, delete", passive_deletes=True )
+    # OTM
+    sessions = relationship( 'SessionModel', backref="owner", cascade="all, delete", passive_deletes=True )
 
     def __repr__(self):
         return '<User %s>' % self.uuid

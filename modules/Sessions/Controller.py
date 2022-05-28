@@ -1,6 +1,6 @@
 from modules.Pantheon.Factory import db
 from modules.Sessions.DatabaseModels import SessionModel
-from modules.Users.Controller import UserController
+from modules.Users.Controller import user_controller
 from sqlalchemy import exc
 # data validation happens _here_
 # input sanitization happens here, too.
@@ -17,8 +17,7 @@ class SessionController:
         return sessions
 
     def create( self, uuid, password ):
-        ucon = UserController()
-        user = ucon.get_uuid( uuid )
+        user = user_controller.get_uuid( uuid )
         if user is None:
             print("User not found.")
             return None
@@ -26,7 +25,7 @@ class SessionController:
             print("User UUID: {0}".format(user.uuid))
 
         try:
-            session = SessionModel(user_uuid=user.uuid)
+            session = SessionModel(owner_id=user.uuid)
             db.session.add(session)
             db.session.commit()
 
@@ -39,7 +38,7 @@ class SessionController:
             return None
 
     def get_token( self, token ):
-        session = db.session.query(SessionModel).filter_by( uuid=token ).first()
+        session = db.session.query(SessionModel).filter_by( guid=token ).first()
         return session
 
 
