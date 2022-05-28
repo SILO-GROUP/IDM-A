@@ -39,7 +39,7 @@ class UserModel(db.Model):
     # MTM
     groups = relationship( 'GroupModel', secondary=user_group_relations, back_populates="members" )
     # OTM
-    sessions = relationship( 'SessionModel', backref="owner", cascade="all, delete", passive_deletes=True )
+    sessions = relationship( 'SessionModel', backref="user", cascade="all, delete", passive_deletes=True )
 
     def __repr__(self):
         return '<User %s>' % self.uuid
