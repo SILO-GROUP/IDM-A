@@ -15,14 +15,14 @@ SessionCreateFields = session_api.model(
 SessionFields = session_api.model(
     'secure_session_view',
     {
-        'uuid': fields.String(required=True, description="The session UUID."),
+        'suid': fields.String(required=True, description="The session SUID."),
         'creation_date': fields.String(required=True, description="Creation time of the session.")
     }
 )
 
 UGroupFields = session_api.model(
     'secure_group_view_session', {
-        'uuid': fields.String( required=False, description='Identifier of the group.'),
+        'guid': fields.String( required=False, description='Identifier of the group.'),
         'name': fields.String( required=True, description='The name of the group.')
     }
 )
@@ -42,12 +42,8 @@ SessionEmbeddedUser = session_api.model(
 InsecureSessionFields = session_api.model(
     'insecure_session_view',
     {
-        'uuid': fields.String( required=True, description="The session UUID."),
+        'suid': fields.String( required=True, description="The session SUID."),
         'creation_date': fields.String(required=True, description="Creation time of the session."),
         'user': fields.Nested( SessionEmbeddedUser, many=False)
     }
 )
-
-authorizations = {
-    'Authorization'
-}

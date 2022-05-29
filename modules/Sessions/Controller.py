@@ -38,7 +38,7 @@ class SessionController:
             return None
 
     def get_token( self, token ):
-        session = db.session.query(SessionModel).filter_by( guid=token ).first()
+        session = db.session.query(SessionModel).filter_by( suid=token ).first()
         return session
 
 

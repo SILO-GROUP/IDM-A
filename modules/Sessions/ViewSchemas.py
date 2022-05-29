@@ -12,7 +12,7 @@ class NestedGroups(ma.Schema):
         model = GroupModel
         fields = (
             "name",
-            "uuid",
+            "guid",
         )
 
 
@@ -36,7 +36,7 @@ class SessionSchema(ma.Schema):
         model = SessionModel
         fields = (
             "name",
-            "uuid",
+            "suid",
             'creation_date',
             'user'
         )

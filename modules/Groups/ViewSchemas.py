@@ -18,7 +18,7 @@ class GroupSchema(ma.Schema):
     class Meta:
         fields = (
             "name",
-            "uuid",
+            "guid",
             'creation_date',
             'members'
         )

@@ -2,7 +2,7 @@ from flask import request
 from flask_restx import Resource
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
-from modules.Pantheon.Namespaces import user_api
+from modules.Pantheon.Namespaces import user_api as api
 from modules.Users.Controller import user_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
 from modules.Sessions.Decorators import require_session
@@ -11,20 +11,38 @@ from modules.Users.Decorators import require_same_user
 
 
 def expect_header( name, desc ):
-    return user_api.doc(params={ name: {'in': 'header', 'description':  desc } })
+    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
+    return api.doc(params={ name: {'in': 'header', 'description':  desc } })
 
 
 def input_schema( schema ):
-    return user_api.expect(schema)
+    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
+    return api.expect(schema)
 
 
-@user_api.route('/all')
+def expect_url_var( variable, desc ):
+    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
+    return api.param( variable, desc )
+
+
+def output_schema( schema ):
+    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
+    return api.marshal_list_with( schema, mask='' )
+
+
+def potential_response( status_code, message ):
+    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
+    return api.response( status_code, message )
+
+
+@api.route('/all')
 class Users(Resource):
-    @user_api.doc('list_users')
-    @expect_header( 'Authorization', 'An authorization bearer token.')
     @require_session
     @require_group('wheel')
-    @user_api.marshal_list_with(UserFields, mask="")
+    @expect_header( 'Authorization', 'An authorization bearer token.')
+    @output_schema( UserFields )
+    @potential_response( 404, 'No users found.' )
+    @potential_response( 200, 'Success' )
     def get(self):
         '''List all users.'''
         users = user_controller.get_all()
@@ -34,13 +52,11 @@ class Users(Resource):
         return users_schema.dump(users)
 
 
-@user_api.route('/create')
+@api.route('/create')
 class User(Resource):
-    @user_api.doc('create_user')
     @input_schema(UserCreateFields)
-    @expect_header( 'Authorization', 'An authorization bearer token.')
-    @user_api.response(201, 'User Created.')
-    @user_api.response(400, 'Failed to create user.')
+    @potential_response(201, 'User Created.')
+    @potential_response(400, 'Failed to create user.')
     def post( self ):
         '''Create a user.'''
         new_user = user_controller.create(
@@ -55,13 +71,14 @@ class User(Resource):
 
 
 # require wheel to prevent enumeration of users
-@user_api.route('/id/<id>')
-@user_api.param('id', "The user's unique identifier.")
-@user_api.response(404, 'User not found')
+@api.route('/id/<id>')
+@expect_url_var('id', "The user's unique identifier.")
+@potential_response(404, 'User not found')
 class User(Resource):
     @require_session
+    @expect_header( 'Authorization', 'An authorization bearer token.')
     @require_group('wheel')
-    @user_api.doc('get_user_id')
+    @api.doc('get_user_id')
     def get( self, id ):
         '''Fetch a user given its identifier.'''
         user = user_controller.get_id(id=id)
@@ -70,11 +87,11 @@ class User(Resource):
         return user_schema.dump(user)
 
 
-@user_api.route('/username/<username>')
-@user_api.param('username', "The user's username.")
-@user_api.response(404, 'User not found')
+@api.route('/username/<username>')
+@api.param('username', "The user's username.")
+@api.response(404, 'User not found')
 class User(Resource):
-    @user_api.doc('get_user_username')
+    @api.doc('get_user_username')
     def get( self, username ):
         '''Fetch a user given its username.'''
         user = user_controller.get_username(username=username)
@@ -83,11 +100,11 @@ class User(Resource):
         return user_schema.dump(user)
 
 
-@user_api.route('/email/<email>')
-@user_api.param('email', "The user's email address.")
-@user_api.response(404, 'User not found')
+@api.route('/email/<email>')
+@api.param('email', "The user's email address.")
+@api.response(404, 'User not found')
 class User(Resource):
-    @user_api.doc('get_user_email')
+    @api.doc('get_user_email')
     def get( self, email ):
         '''Fetch a user given its email address.'''
         user = user_controller.get_email(email=email)
@@ -96,12 +113,12 @@ class User(Resource):
         return user_schema.dump( user )
 
 
-@user_api.route('/uuid/<uuid>')
-@user_api.param('uuid', "The user's UUID.")
-@user_api.response(404, 'User not found.')
-@user_api.response(code=200, model=UserFields, description='')
+@api.route('/uuid/<uuid>')
+@api.param('uuid', "The user's UUID.")
+@api.response(404, 'User not found.')
+@api.response(code=200, model=UserFields, description='')
 class User(Resource):
-    @user_api.doc('get_user_uuid')
+    @api.doc('get_user_uuid')
     @require_session
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
@@ -110,11 +127,11 @@ class User(Resource):
             return 'User not found.', 404
         return user_schema.dump(user)
 
-    @user_api.doc('update_user')
+    @api.doc('update_user')
     @require_session
     @require_same_user
-    @user_api.expect(UserUpdateFields)
-    @user_api.response(404, 'User not found.')
+    @api.expect(UserUpdateFields)
+    @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''
 

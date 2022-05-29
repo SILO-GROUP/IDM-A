@@ -7,14 +7,14 @@ class NestedGroup(ma.Schema):
     class Meta:
         fields = (
             "name",
-            "uuid",
+            "guid",
         )
 
 
 class NestedSession(ma.Schema):
     class Meta:
         fields = (
-            'uuid',
+            'suid',
             'creation_date'
         )
 
