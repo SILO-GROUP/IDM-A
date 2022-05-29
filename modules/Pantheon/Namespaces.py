@@ -17,6 +17,10 @@ class NamespaceWrapper(Namespace):
     def output_schema(self, schema):
         return self.marshal_list_with( schema, mask='' )
 
+    def no_auth(self, *args, **kwargs):
+        print(args, kwargs)
+        return self.doc(security=None)
+
 
 
 user_api = NamespaceWrapper('user', description='User Management API')
