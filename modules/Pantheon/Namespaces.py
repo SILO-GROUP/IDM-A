@@ -1,5 +1,3 @@
-from functools import wraps
-import functools
 from flask_restx import Namespace
 
 
@@ -20,10 +18,7 @@ class NamespaceWrapper(Namespace):
         return self.marshal_list_with(schema, mask='')
 
     def no_auth(self, func):
-        @wraps(func)
-        def wrapper():
-            return self.doc(security=None)(func)
-        return wrapper()
+        return self.doc(security=None)(func)
 
 
 user_api = NamespaceWrapper('user', description='User Management API')
