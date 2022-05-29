@@ -22,7 +22,7 @@ class SessionController:
             print("User not found.")
             return None
         else:
-            print("User UUID: {0}".format(user.uuid))
+            print(user)
 
         try:
             session = SessionModel(owner_id=user.uuid)

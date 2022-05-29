@@ -15,12 +15,12 @@ with app.app_context():
 
     root_user = user_controller.create('root', 'root@localhost', 'password')
     root_group = group_controller.create('wheel')
-    group_controller.add_member(root_group, root_user)
+    x = group_controller.add_member(root_group, root_user)
     root_session = session_controller.create(root_user.uuid, root_user.password)
     print(root_session)
 
     normal_user = user_controller.create('test_user', 'test@localhost', 'password')
     normal_group = group_controller.create('dummies')
-    group_controller.add_member(normal_group, normal_user)
+    x = group_controller.add_member(normal_group, normal_user)
     normal_session = session_controller.create(normal_user.uuid, normal_user.password)
     print(normal_session)
