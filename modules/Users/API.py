@@ -5,14 +5,14 @@ from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFiel
 from modules.Pantheon.Namespaces import user_api as api
 from modules.Users.Controller import user_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
-from modules.Sessions.Decorators import require_session
+from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
 
 
 @api.route('/all')
 class Users(Resource):
-    @require_session
+    @session_required
     @require_group('sys-enumerate_users')
     @api.output_schema( UserFields )
     @api.response( 404, 'No users found.' )
@@ -28,7 +28,7 @@ class Users(Resource):
 
 @api.route('/create')
 class User(Resource):
-    @api.no_auth
+    @api.no_session_required
     @api.input_schema(UserCreateFields)
     @api.response(201, 'User Created.')
     @api.response(400, 'Failed to create user.')
@@ -49,7 +49,7 @@ class User(Resource):
 @api.route('/id/<id>')
 @api.expect_url_var('id', "The user's unique identifier.")
 class User(Resource):
-    @require_session
+    @session_required
     @require_group('wheel')
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
@@ -66,7 +66,7 @@ class User(Resource):
 @api.response(404, 'User not found')
 @api.response(200, 'Success')
 class User(Resource):
-    @api.no_auth
+    @api.no_session_required
     def get( self, username ):
         '''Fetch a user given its username.'''
         user = user_controller.get_username(username=username)
@@ -80,7 +80,7 @@ class User(Resource):
 @api.response(404, 'User not found')
 @api.response(200, model=UserFields, description='Success')
 class User(Resource):
-    @api.no_auth
+    @api.no_session_required
     def get( self, email ):
         '''Fetch a user given its email address.'''
         user = user_controller.get_email(email=email)
@@ -94,7 +94,7 @@ class User(Resource):
 @api.response(404, 'User not found.')
 @api.response(code=200, model=UserFields, description='')
 class User(Resource):
-    @require_session
+    @session_required
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
         user = user_controller.get_uuid(uuid=uuid)
@@ -102,7 +102,7 @@ class User(Resource):
             return 'User not found.', 404
         return user_schema.dump(user)
 
-    @require_session
+    @session_required
     @require_same_user
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')

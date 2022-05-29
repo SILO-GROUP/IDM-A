@@ -1,6 +1,6 @@
 from flask_restx import Api
 from modules.Users.API import api as user_api
-from modules.Groups.API import group_api
+from modules.Groups.API import api as group_api
 from modules.Sessions.API import session_api
 
 from .Factory import app

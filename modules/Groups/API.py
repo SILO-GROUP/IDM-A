@@ -2,18 +2,17 @@ from flask_restx import Resource
 from flask import request, g
 
 from modules.Groups.APIModels import GroupFields, GroupCreateFields, GroupMemberModifyFields
-from modules.Pantheon.Namespaces import group_api
+from modules.Pantheon.Namespaces import group_api as api
 from modules.Groups.Controller import group_controller
 from modules.Groups.ViewSchemas import group_schema, groups_schema
 from modules.Groups.Decorators import *
 from modules.Sessions.Decorators import *
 
 
-@require_session
-@group_api.route('/all')
+@api.route('/all')
 class Groups(Resource):
-    @group_api.doc('list_groups')
-    @group_api.marshal_list_with(GroupFields)
+    @session_required
+    @api.output_schema(GroupFields)
     def get(self):
         '''List all groups.'''
         groups = group_controller.get_all()
@@ -23,12 +22,12 @@ class Groups(Resource):
         return groups_schema.dump(groups)
 
 
-@group_api.route('/create')
+@api.route('/create')
 class Group(Resource):
-    @group_api.doc('create_group')
-    @group_api.expect(GroupCreateFields)
-    @group_api.response( 201, 'Group created.' )
-    @group_api.response( 400, 'Failed to create group.' )
+    @api.doc('create_group')
+    @api.expect(GroupCreateFields)
+    @api.response( 201, 'Group created.' )
+    @api.response( 400, 'Failed to create group.' )
     def post( self ):
         '''Create a group.'''
         new_group = group_controller.create(
@@ -41,11 +40,11 @@ class Group(Resource):
         return group_schema.dump(new_group), 201
 
 
-@group_api.route('/uuid/<uuid>')
-@group_api.param('uuid', 'The group UUID.')
-@group_api.response( 404, 'Group not found.' )
+@api.route('/uuid/<uuid>')
+@api.param('uuid', 'The group UUID.')
+@api.response( 404, 'Group not found.' )
 class Group(Resource):
-    @group_api.doc('get_group_uuid')
+    @api.doc('get_group_uuid')
     def get(self, group_uuid ):
         '''Get group details by group UUID.'''
         group = group_controller.get_uuid(uuid=group_uuid)
@@ -65,10 +64,10 @@ class Group(Resource):
 
         return group_schema.dump( result )
 
-    @group_api.param('uuid', 'The group UUID.')
-    @group_api.doc( 'delete_group_uuid' )
-    @group_api.response(404, 'Group not found.')
-    @group_api.response(401, 'Group not empty.')
+    @api.param('uuid', 'The group UUID.')
+    @api.doc( 'delete_group_uuid' )
+    @api.response(404, 'Group not found.')
+    @api.response(401, 'Group not empty.')
     def delete(self, uuid ):
         '''Delete an empty group.'''
         group = group_controller.get_uuid(uuid=uuid)
@@ -79,11 +78,11 @@ class Group(Resource):
             return 'Refused to delete non-empty group. ', 401
 
 
-@group_api.route('/name/<name>')
-@group_api.param('name', 'The group name.')
-@group_api.response( 404, 'Group not found.' )
+@api.route('/name/<name>')
+@api.param('name', 'The group name.')
+@api.response( 404, 'Group not found.' )
 class Group(Resource):
-    @group_api.doc('get_group_byname')
+    @api.doc('get_group_byname')
     def get(self, name ):
         '''Get group details by group name.'''
         group = group_controller.get_name(name=name)
@@ -93,12 +92,12 @@ class Group(Resource):
         return group_schema.dump(group)
 
 
-@group_api.route('/uuid/<uuid>/members')
-@group_api.param('uuid', 'The group UUID.')
-@group_api.response( 404, 'Group not found.' )
+@api.route('/uuid/<uuid>/members')
+@api.param('uuid', 'The group UUID.')
+@api.response( 404, 'Group not found.' )
 class Group(Resource):
-    @group_api.doc('add_user_to_group')
-    @group_api.expect(GroupMemberModifyFields)
+    @api.doc('add_user_to_group')
+    @api.expect(GroupMemberModifyFields)
     def put(self, uuid ):
         '''Add a user to a group.'''
         group = group_controller.get_uuid(uuid=uuid)
@@ -116,10 +115,10 @@ class Group(Resource):
             return 'Failed to append group.', 400
         return group_schema.dump(result), 201
 
-    @group_api.doc('remove_user_from_group')
-    @group_api.expect(GroupMemberModifyFields)
-    @group_api.response(404, 'Group not found.')
-    @group_api.response(401, 'User not in group.')
+    @api.doc('remove_user_from_group')
+    @api.expect(GroupMemberModifyFields)
+    @api.response(404, 'Group not found.')
+    @api.response(401, 'User not in group.')
     def delete( self, uuid ):
         '''Remove a user from a group.'''
         group = group_controller.get_uuid(uuid=uuid)

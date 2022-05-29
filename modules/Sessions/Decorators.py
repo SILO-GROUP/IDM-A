@@ -11,6 +11,7 @@ def fetch_requestor_context():
     auth_header = request.headers.get('Authorization')
     if auth_header:
         token = auth_header
+    # reimplement when bearer prefix is integrated into swagger
     #if auth_header and len( auth_header.split(" ") ) == 2:
     #    token = auth_header.split(" ")[1]
     else:
@@ -20,7 +21,7 @@ def fetch_requestor_context():
         g.session = session_controller.get_token( token=token )
 
 
-def require_session(method):
+def session_required(method):
     @wraps(method)
     def _impl(*method_args, **method_kwargs):
         if g.session is not None:
