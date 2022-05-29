@@ -15,9 +15,9 @@ class Users(Resource):
     @require_session
     @require_group('sys-enumerate_users')
 #    @api.expect_header( 'Authorization', 'An authorization bearer token.')
-    @api.output_schema( UserFields )
-    @api.response( 404, 'No users found.' )
-    @api.response( 200, 'Success' )
+    @api.output_schema(UserFields)
+    @api.response(404, 'No users found.')
+    @api.response(200, 'Success')
     def get(self):
         '''List all users.'''
         users = user_controller.get_all()
@@ -29,11 +29,11 @@ class Users(Resource):
 
 @api.route('/create')
 class User(Resource):
-    @api.no_auth()
+    @api.no_auth
     @api.input_schema(UserCreateFields)
     @api.response(201, 'User Created.')
     @api.response(400, 'Failed to create user.')
-    def post( self ):
+    def post(self):
         '''Create a user.'''
         new_user = user_controller.create(
             username=request.json['username'],
@@ -52,10 +52,10 @@ class User(Resource):
 class User(Resource):
     @require_session
     @require_group('wheel')
-    @api.expect_header( 'Authorization', 'An authorization bearer token.')
+    @api.expect_header('Authorization', 'An authorization bearer token.')
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
-    def get( self, id ):
+    def get(self, id):
         '''Fetch a user given its identifier.'''
         user = user_controller.get_id(id=id)
         if user is None:
@@ -69,7 +69,7 @@ class User(Resource):
 @api.response(200, 'Success')
 class User(Resource):
     @api.no_auth
-    def get( self, username ):
+    def get(self, username):
         '''Fetch a user given its username.'''
         user = user_controller.get_username(username=username)
         if user is None:
@@ -82,12 +82,12 @@ class User(Resource):
 @api.response(404, 'User not found')
 @api.response(200, model=UserFields, description='Success')
 class User(Resource):
-    def get( self, email ):
+    def get(self, email):
         '''Fetch a user given its email address.'''
         user = user_controller.get_email(email=email)
         if user is None:
             return 'User not found.', 404
-        return user_schema.dump( user )
+        return user_schema.dump(user)
 
 
 @api.route('/uuid/<uuid>')
@@ -96,7 +96,7 @@ class User(Resource):
 @api.response(code=200, model=UserFields, description='')
 class User(Resource):
     @require_session
-    def get( self, uuid ):
+    def get(self, uuid):
         '''Fetch a user given its UUID.'''
         user = user_controller.get_uuid(uuid=uuid)
         if user is None:
@@ -107,23 +107,23 @@ class User(Resource):
     @require_same_user
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
-    def put( self, uuid ):
+    def put(self, uuid):
         '''Update a user's attributes.'''
 
         user = user_controller.get_uuid(uuid=uuid)
         if user is None:
             return "User not found.", 404
 
-        username=None
-        email=None
-        password=None
+        username = None
+        email = None
+        password = None
 
         if 'username' in request.json:
-            username=request.json['username']
+            username = request.json['username']
         if 'email' in request.json:
-            email=request.json['email']
+            email = request.json['email']
         if 'password' in request.json:
-            password=request.json['password']
+            password = request.json['password']
 
         user_result = user_controller.update(user, username, email, password)
 
