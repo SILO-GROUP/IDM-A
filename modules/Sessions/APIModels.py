@@ -47,3 +47,7 @@ InsecureSessionFields = session_api.model(
         'user': fields.Nested( SessionEmbeddedUser, many=False)
     }
 )
+
+authorizations = {
+    'Authorization'
+}

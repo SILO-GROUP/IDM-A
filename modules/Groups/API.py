@@ -10,7 +10,6 @@ from modules.Sessions.Decorators import *
 
 
 @require_session
-@require_group('wheel')
 @group_api.route('/all')
 class Groups(Resource):
     @group_api.doc('list_groups')

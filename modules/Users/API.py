@@ -1,24 +1,28 @@
-from flask import request, g
+from flask import request
 from flask_restx import Resource
 
 from modules.Users.APIModels import UserFields, UserCreateFields, UserUpdateFields
 from modules.Pantheon.Namespaces import user_api
 from modules.Users.Controller import user_controller
-from modules.Sessions.Controller import session_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
-from modules.Sessions.Decorators import *
-from modules.Groups.Decorators import *
+from modules.Sessions.Decorators import require_session
+from modules.Groups.Decorators import require_group
+from modules.Users.Decorators import require_same_user
 
 # create credits module
 # create restrictions module
 
+headers = user_api.parser()
+headers.add_argument('Authorization', location='headers')
+
 
 @user_api.route('/all')
 class Users(Resource):
+    @user_api.expect(headers)
     @user_api.doc('list_users')
     @require_session
     @require_group('wheel')
-    @user_api.marshal_list_with(UserFields)
+    @user_api.marshal_list_with(UserFields, mask="")
     def get(self):
         '''List all users.'''
         users = user_controller.get_all()
@@ -47,12 +51,15 @@ class User(Resource):
         return user_schema.dump(new_user), 201
 
 
+# require wheel to prevent enumeration of users
 @user_api.route('/id/<id>')
 @user_api.param('id', "The user's unique identifier.")
 @user_api.response(404, 'User not found')
 class User(Resource):
+    @require_session
+    @require_group('wheel')
     @user_api.doc('get_user_id')
-    def get(self, id):
+    def get( self, id ):
         '''Fetch a user given its identifier.'''
         user = user_controller.get_id(id=id)
         if user is None:
@@ -92,6 +99,7 @@ class User(Resource):
 @user_api.response(code=200, model=UserFields, description='')
 class User(Resource):
     @user_api.doc('get_user_uuid')
+    @require_session
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
         user = user_controller.get_uuid(uuid=uuid)
@@ -100,6 +108,8 @@ class User(Resource):
         return user_schema.dump(user)
 
     @user_api.doc('update_user')
+    @require_session
+    @require_same_user
     @user_api.expect(UserUpdateFields)
     @user_api.response(404, 'User not found.')
     def put( self, uuid ):

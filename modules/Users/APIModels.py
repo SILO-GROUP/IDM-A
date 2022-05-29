@@ -4,6 +4,7 @@
 from flask_restx import fields
 from modules.Pantheon.Namespaces import user_api
 
+
 # OUTPUT fields for showing to the user
 # @api.marshal_with
 USessionFields = user_api.model(

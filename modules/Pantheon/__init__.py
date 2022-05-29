@@ -1,5 +1,4 @@
 from flask_restx import Api
-from flask import request
 from modules.Users.API import user_api
 from modules.Groups.API import group_api
 from modules.Sessions.API import session_api
@@ -10,7 +9,6 @@ api = Api(
     title='Pantheon API',
     version='1.0',
     description='REST API Documentation for Pantheon.',
-    # All API metadatas
 )
 
 api.add_namespace(user_api)
