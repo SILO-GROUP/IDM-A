@@ -9,8 +9,10 @@ def fetch_requestor_context():
     g.context_flag = True
 
     auth_header = request.headers.get('Authorization')
-    if auth_header and len( auth_header.split(" ") ) == 2:
-        token = auth_header.split(" ")[1]
+    if auth_header:
+        token = auth_header
+    #if auth_header and len( auth_header.split(" ") ) == 2:
+    #    token = auth_header.split(" ")[1]
     else:
         token = ''
         g.session = None

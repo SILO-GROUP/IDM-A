@@ -5,10 +5,19 @@ from modules.Sessions.API import session_api
 
 from .Factory import app
 
+authorizations = {
+    'apiKey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    }
+}
+
 api = Api(
     title='Pantheon API',
     version='1.0',
     description='REST API Documentation for Pantheon.',
+    authorizations=authorizations
 )
 
 api.add_namespace(user_api)
