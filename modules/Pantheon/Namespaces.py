@@ -9,18 +9,18 @@ class NamespaceWrapper(Namespace):
         return self.doc(params={name: {"in": "header", "description": desc}})
 
     def input_schema(self, schema):
-        return self.expect( schema )
+        return self.expect(schema)
 
     def expect_url_var(self, variable, desc):
-        return self.param( variable, desc )
+        return self.param(variable, desc)
 
     def output_schema(self, schema):
-        return self.marshal_list_with( schema, mask='' )
+        return self.marshal_list_with(schema, mask='')
 
-    def no_auth(self, *args, **kwargs):
-        print(args, kwargs)
-        return self.doc(security=None)
-
+    def no_auth(self, func):
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
 
 
 user_api = NamespaceWrapper('user', description='User Management API')
