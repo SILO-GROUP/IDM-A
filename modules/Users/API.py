@@ -1,7 +1,6 @@
 from flask import request
 from flask_restx import Resource
 from modules.Groups.Decorators import require_group
-from modules.Pantheon.Decorators import expect_header
 from modules.Pantheon.Namespaces import user_api as api
 from modules.Sessions.Decorators import require_session
 from modules.Users.APIModels import UserCreateFields, UserFields, UserUpdateFields
@@ -29,7 +28,7 @@ def output_schema(schema):
 class Users(Resource):
     @require_session
     @require_group("sys-enumerate_users")
-    @expect_header(api, "Authorization", "An authorization bearer token.")
+    @api.expect_header("Authorization", "An authorization bearer token.")
     @output_schema(UserFields)
     @api.response(404, "No users found.")
     @api.response(200, "Success")
@@ -66,7 +65,7 @@ class User(Resource):
 class User(Resource):
     @require_session
     @require_group("wheel")
-    @expect_header(api, "Authorization", "An authorization bearer token.")
+    @api.expect_header("Authorization", "An authorization bearer token.")
     @api.response(404, "User not found")
     @api.response(200, "Success")
     def get(self, id):
