@@ -14,7 +14,6 @@ from modules.Users.Decorators import require_same_user
 class Users(Resource):
     @require_session
     @require_group('sys-enumerate_users')
-#    @api.expect_header( 'Authorization', 'An authorization bearer token.')
     @api.output_schema( UserFields )
     @api.response( 404, 'No users found.' )
     @api.response( 200, 'Success' )
@@ -29,7 +28,7 @@ class Users(Resource):
 
 @api.route('/create')
 class User(Resource):
-    @api.no_auth()
+    @api.no_auth
     @api.input_schema(UserCreateFields)
     @api.response(201, 'User Created.')
     @api.response(400, 'Failed to create user.')
@@ -52,7 +51,6 @@ class User(Resource):
 class User(Resource):
     @require_session
     @require_group('wheel')
-    @api.expect_header( 'Authorization', 'An authorization bearer token.')
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
     def get( self, id ):
@@ -64,7 +62,7 @@ class User(Resource):
 
 
 @api.route('/username/<username>')
-@api.param('username', "The user's username.")
+@api.expect_url_var('username', "The user's username.")
 @api.response(404, 'User not found')
 @api.response(200, 'Success')
 class User(Resource):
@@ -82,6 +80,7 @@ class User(Resource):
 @api.response(404, 'User not found')
 @api.response(200, model=UserFields, description='Success')
 class User(Resource):
+    @api.no_auth
     def get( self, email ):
         '''Fetch a user given its email address.'''
         user = user_controller.get_email(email=email)

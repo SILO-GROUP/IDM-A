@@ -1,5 +1,5 @@
 from flask_restx import Namespace
-
+from functools import wraps
 
 class NamespaceWrapper(Namespace):
     def __init__(self, *args, **kwargs):
@@ -17,11 +17,11 @@ class NamespaceWrapper(Namespace):
     def output_schema(self, schema):
         return self.marshal_list_with( schema, mask='' )
 
-    def no_auth(self, *args, **kwargs):
-        print(args, kwargs)
-        return self.doc(security=None)
-
-
+    def no_auth(self, func):
+        @wraps(func)
+        def wrapper():
+            return self.doc(security=None)(func)
+        return wrapper()
 
 user_api = NamespaceWrapper('user', description='User Management API')
 group_api = NamespaceWrapper('group', description='Group Management API')
