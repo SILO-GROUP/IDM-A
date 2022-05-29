@@ -9,17 +9,19 @@ from modules.Sessions.Decorators import require_session
 from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
 
-# create credits module
-# create restrictions module
 
-headers = user_api.parser()
-headers.add_argument('Authorization', location='headers')
+def expect_header( name, desc ):
+    return user_api.doc(params={ name: {'in': 'header', 'description':  desc } })
+
+
+def input_schema( schema ):
+    return user_api.expect(schema)
 
 
 @user_api.route('/all')
 class Users(Resource):
-    @user_api.expect(headers)
     @user_api.doc('list_users')
+    @expect_header( 'Authorization', 'An authorization bearer token.')
     @require_session
     @require_group('wheel')
     @user_api.marshal_list_with(UserFields, mask="")
@@ -35,7 +37,8 @@ class Users(Resource):
 @user_api.route('/create')
 class User(Resource):
     @user_api.doc('create_user')
-    @user_api.expect(UserCreateFields)
+    @input_schema(UserCreateFields)
+    @expect_header( 'Authorization', 'An authorization bearer token.')
     @user_api.response(201, 'User Created.')
     @user_api.response(400, 'Failed to create user.')
     def post( self ):
