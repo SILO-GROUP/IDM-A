@@ -1,6 +1,4 @@
-from typing import Union
-
-from flask_restx import Api, Namespace
+from flask_restx import Namespace
 
 
 class NamespaceWrapper(Namespace):
