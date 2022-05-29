@@ -10,32 +10,12 @@ from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
 
 
-def expect_header( name, desc ):
-    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
-    return api.doc(params={ name: {'in': 'header', 'description':  desc } })
-
-
-def input_schema( schema ):
-    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
-    return api.expect(schema)
-
-
-def expect_url_var( variable, desc ):
-    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
-    return api.param( variable, desc )
-
-
-def output_schema( schema ):
-    # user_api needs abstracted away here so that this can be reusable in a shared library for other namespaces
-    return api.marshal_list_with( schema, mask='' )
-
-
 @api.route('/all')
 class Users(Resource):
     @require_session
     @require_group('sys-enumerate_users')
-    @expect_header( 'Authorization', 'An authorization bearer token.')
-    @output_schema( UserFields )
+    @api.expect_header( 'Authorization', 'An authorization bearer token.')
+    @api.output_schema( UserFields )
     @api.response( 404, 'No users found.' )
     @api.response( 200, 'Success' )
     def get(self):
@@ -49,7 +29,7 @@ class Users(Resource):
 
 @api.route('/create')
 class User(Resource):
-    @input_schema(UserCreateFields)
+    @api.input_schema(UserCreateFields)
     @api.response(201, 'User Created.')
     @api.response(400, 'Failed to create user.')
     def post( self ):
@@ -67,11 +47,11 @@ class User(Resource):
 
 # require wheel to prevent enumeration of users
 @api.route('/id/<id>')
-@expect_url_var('id', "The user's unique identifier.")
+@api.expect_url_var('id', "The user's unique identifier.")
 class User(Resource):
     @require_session
     @require_group('wheel')
-    @expect_header( 'Authorization', 'An authorization bearer token.')
+    @api.expect_header( 'Authorization', 'An authorization bearer token.')
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
     def get( self, id ):
@@ -96,7 +76,7 @@ class User(Resource):
 
 
 @api.route('/email/<email>')
-@expect_url_var('email', "The user's email address.")
+@api.expect_url_var('email', "The user's email address.")
 @api.response(404, 'User not found')
 @api.response(200, model=UserFields, description='Success')
 class User(Resource):
@@ -109,7 +89,7 @@ class User(Resource):
 
 
 @api.route('/uuid/<uuid>')
-@api.param('uuid', "The user's UUID.")
+@api.expect_url_var('uuid', "The user's UUID.")
 @api.response(404, 'User not found.')
 @api.response(code=200, model=UserFields, description='')
 class User(Resource):
@@ -121,10 +101,9 @@ class User(Resource):
             return 'User not found.', 404
         return user_schema.dump(user)
 
-    @api.doc('update_user')
     @require_session
     @require_same_user
-    @api.expect(UserUpdateFields)
+    @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''
