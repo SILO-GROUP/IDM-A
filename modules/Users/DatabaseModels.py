@@ -32,6 +32,7 @@ class UserModel(db.Model):
     username =  Column( String(50), unique=True, nullable=False )
     password = Column( String(100), nullable=False )
     active = Column( Boolean(), default=False, )
+    service_account = Column( Boolean(), default=False, )
     email_verified = Column( Boolean(), default=False )
     identity_verified = Column( Boolean(), default=False )
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )

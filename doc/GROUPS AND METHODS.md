@@ -14,7 +14,7 @@ Methods on users, groups and sessions, while restricted to built-in groups, are 
 
 ## RAILS ON CRUD
 
-No, we're not using Ruby on Rails to blockchain your NFT to the kubernetes when we say "CRUD ON RAILS".  What this phrase means is that IDM/A is essentially a CRUD app for users, groups, and sessions.  The access control mechanisms are just a layer of rails on top of that to secure the use of those CRUD features.
+No, we're not using Ruby on Rails to blockchain your NFT to the kubernetes when we say "RAILS ON CRUD".  What this phrase means is that IDM/A is essentially a CRUD app for users, groups, and sessions.  The access control mechanisms are just a layer of rails on top of that to secure the use of those CRUD features.
 
 ## Groups and Methods
 
@@ -60,3 +60,4 @@ IDM/A
 | sys-list_groups   | List all groups and their associated members.                          |
 | sys-modify_groups | Modify group attributes, including membership.                         |
 | sys-list_sessions | List all sessions and their associated users.                          |
+ | 
