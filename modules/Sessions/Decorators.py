@@ -18,7 +18,7 @@ def fetch_requestor_context():
         token = ''
         g.session = None
     if token:
-        g.session = session_controller.get_token( token=token )
+        g.session = session_controller.get_token(suid=token)
 
 
 def session_required(method):

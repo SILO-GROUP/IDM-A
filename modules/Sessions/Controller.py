@@ -17,12 +17,12 @@ class SessionController:
         return sessions
 
     def create( self, uuid, password ):
-        user = user_controller.get_uuid( uuid )
+        user = user_controller.get_uuid(uuid)
         if user is None:
-            print("User not found.")
             return None
         else:
-            print(user)
+            if user.password != password:
+                return None
 
         try:
             session = SessionModel(owner_id=user.uuid)
@@ -30,15 +30,11 @@ class SessionController:
             db.session.commit()
 
             return session
- #       except exc.IntegrityError:
- #           print("Integrity error...")
- #           return None
         except exc.PendingRollbackError:
-            print("Constraint failure?")
             return None
 
-    def get_token( self, token ):
-        session = db.session.query(SessionModel).filter_by( suid=token ).first()
+    def get_token(self, suid):
+        session = db.session.query(SessionModel).filter_by(suid=suid).first()
         return session
 
 

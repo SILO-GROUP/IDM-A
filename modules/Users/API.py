@@ -97,19 +97,18 @@ class User(Resource):
     @session_required
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
-        user = user_controller.get_uuid(uuid=uuid)
+        user = user_controller.get_guid(guid=uuid)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump(user)
 
     @session_required
-    @require_same_user
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''
 
-        user = user_controller.get_uuid(uuid=uuid)
+        user = user_controller.get_guid(guid=uuid)
         if user is None:
             return "User not found.", 404
 

@@ -1,8 +1,6 @@
 from modules.Groups.DatabaseModels import GroupModel
 from modules.Pantheon.Factory import db
 from sqlalchemy import exc
-# data validation happens _here_
-# input sanitization happens here, too.
 
 
 class GroupController:
@@ -27,8 +25,8 @@ class GroupController:
             return None
         return group
 
-    def get_uuid( self, uuid ):
-        group = db.session.query(GroupModel).filter_by( uuid=uuid ).first()
+    def get_guid(self, guid):
+        group = db.session.query(GroupModel).filter_by(guid=guid).first()
         if group is None:
             return None
         return group
@@ -69,6 +67,12 @@ class GroupController:
             return group
         except exc.IntegrityError:
             return None
+
+    def user_is_in_group( self, user, group ):
+        if group.guid in [entry.guid for entry in user.groups]:
+            return True
+        else:
+            return False
 
 
 group_controller = GroupController()
