@@ -43,7 +43,7 @@ A group is an object associated with 0 or more users.
 - `activated users` have their "active" attribute set to `True`.  They are granted a session after authentication.
 - `deactivated users` have their "active" attribute set to `False`.  They are not granted a session even if they pass authentication.  These users can do nothing.
 - `authenticated users` who are `activated users` and are a `member_of_a_group` may execute IDM/A methods associated with any of the groups they are a member of, in addition to actions controlled by the consumer system of IDM/A.  The consumer system may also use group membership to restrict or allow actions based on membership groups specific to that consuming system.
-- `authenticated users` who are `activated users` and are `not_a_member_of_a_group`, beyond self-management actions such as updating password, are constrained entirely to actions in the consuming system of IDM/A that do not require groups specific to that consuming system.
+- `authenticated users` who are `activated users` and are `not_a_member_of_a_group`, beyond self-management actions such as updating password, are constrained entirely to actions in the consuming system of IDM/A that do not require group membership and are specific to that consuming system.
 
 ### Group/Method Associations
 *These are incomplete.
