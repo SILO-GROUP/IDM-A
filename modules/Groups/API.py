@@ -125,13 +125,13 @@ class Group(Resource):
         if group is None:
             return 'Group not found.', 404
 
-        user = user_controller.get_guid(guid=request.json['guid'])
+        user = user_controller.get_uuid(uuid=request.json['uuid'])
 
         if user is None:
             return 'User not found.', 401
 
-        if user.suid not in group.members:
-            return 'User is not in that group.', 404
+        #if group.guid not in [group.members]:
+        #    return 'User is not in that group.', 404
 
         result = group_controller.remove_member(group, user)
         if result is None:
