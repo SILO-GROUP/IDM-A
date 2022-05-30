@@ -12,7 +12,7 @@ Actions are denied unless an explicit exception is made in the API code.  For in
 
 Methods on users, groups and sessions, while restricted to built-in groups, are universally allowed only to members of the group named "wheel".
 
-## CRUD on RAILS
+## RAILS ON CRUD
 
 No, we're not using Ruby on Rails to blockchain your NFT to the kubernetes when we say "CRUD ON RAILS".  What this phrase means is that IDM/A is essentially a CRUD app for users, groups, and sessions.  The access control mechanisms are just a layer of rails on top of that to secure the use of those CRUD features.
 
