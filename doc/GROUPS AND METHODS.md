@@ -26,16 +26,19 @@ A group is an object associated with 0 or more users.
 
 ## Surfaces
 ```
-─ authenticated_users
-  └── activated_users
-      ├── member_of_a_group
-      │   ├── consumer_system_actions
-      │   └── idma_actions
-      └── not_a_member_of_a_group
-          └── consumer_system_actions
-─ deactivated_users
-─ unauthenticated_users
-  └── (create_user)
+IDM/A
+├── authenticated_users
+│   └── activated_users
+│       ├── member_of_a_group
+│       │   ├── consumer_system_actions
+│       │   ├── restricted_idma_actions
+│       │   └── unrestricted_idma_actions
+│       └── not_a_member_of_a_group
+│           ├── consumer_system_actions
+│           └── unrestricted_idma_actions
+├── deactivated_users
+└── unauthenticated_users
+    └── (create_user)
 ```
 
 - `authenticated users` have a session. 
