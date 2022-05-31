@@ -19,7 +19,7 @@ No, we're not using Ruby on Rails to blockchain your NFT to the kubernetes when 
 ## Groups and Methods
 
 ### Methods
-A method is a URL on the IDM/A endpoint that peforms an action on users, groups, and sessions.
+A method is a URL on the IDM/A endpoint that performs an action on users, groups, and sessions.
 
 ### Groups
 A group is an object associated with 0 or more users.
@@ -51,13 +51,13 @@ IDM/A
 ### Group/Method Associations
 *These are incomplete.
 
-| GROUP             | Provides                                                               |
-|-------------------|------------------------------------------------------------------------|
-| wheel             | Unrestricted access to all authenticated and group-restricted actions. |
-| sys-create_users  | Optionally required for creating users.                                |
-| sys-list_users    | List all users and their associated groups.                            |
-| sys-modify_users  | Modify user attributes.                                                |
-| sys-list_groups   | List all groups and their associated members.                          |
-| sys-modify_groups | Modify group attributes, including membership.                         |
-| sys-list_sessions | List all sessions and their associated users.                          |
+| GROUP                 | Provides                                                               |
+|-----------------------|------------------------------------------------------------------------|
+| wheel                 | Unrestricted access to all authenticated and group-restricted actions. |
+| sys-create_users      | Optionally required for creating users.                                |
+| sys-list_all_users    | List all users and their associated groups.                            |
+| sys-modify_all_users  | Modify user attributes.                                                |
+| sys-list_all_groups   | List all groups and their associated members.                          |
+| sys-modify_all_groups | Modify group attributes, including membership.                         |
+| sys-list_all_sessions | List all sessions and their associated users.                          |
  | 

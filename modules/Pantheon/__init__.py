@@ -1,9 +1,9 @@
 from flask_restx import Api
 from modules.Users.API import api as user_api
 from modules.Groups.API import api as group_api
-from modules.Sessions.API import session_api
-
-from .Factory import app
+from modules.Sessions.API import api as session_api
+from modules.Pantheon.Config import system_config
+from modules.Pantheon.Factory import app
 
 authorizations = {
     'apiKey': {
@@ -14,9 +14,9 @@ authorizations = {
 }
 
 api = Api(
-    title='Pantheon API',
-    version='1.0',
-    description='REST API Documentation for Pantheon.',
+    title=system_config.title,
+    version=system_config.version,
+    description=system_config.description,
     authorizations=authorizations,
     security='apiKey'
 )
