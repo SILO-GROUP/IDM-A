@@ -9,23 +9,7 @@ from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
 
-
-@api.route('/all')
-class Users(Resource):
-    @session_required
-    @require_group('sys-enumerate_users')
-    @api.output_schema( UserFields )
-    @api.response( 404, 'No users found.' )
-    @api.response( 200, 'Success' )
-    def get(self):
-        '''List all users.'''
-        users = user_controller.get_all()
-        if users is None:
-            return 'No users found.', 404
-
-        return users_schema.dump(users)
-
-
+# create
 @api.route('/create')
 class User(Resource):
     @api.no_session_required
@@ -43,6 +27,23 @@ class User(Resource):
             return "Failed to create user.", 400
         # return the ma.schema version appropriate to show a user
         return user_schema.dump(new_user), 201
+
+
+# read
+@api.route('/all')
+class Users(Resource):
+    @session_required
+    @require_group('sys-enumerate_users')
+    @api.output_schema( UserFields )
+    @api.response( 404, 'No users found.' )
+    @api.response( 200, 'Success' )
+    def get(self):
+        '''List all users.'''
+        users = user_controller.get_all()
+        if users is None:
+            return 'No users found.', 404
+
+        return users_schema.dump(users)
 
 
 # require wheel to prevent enumeration of users
@@ -97,18 +98,33 @@ class User(Resource):
     @session_required
     def get( self, uuid ):
         '''Fetch a user given its UUID.'''
-        user = user_controller.get_guid(guid=uuid)
+        user = user_controller.get_uuid(uuid=uuid)
         if user is None:
             return 'User not found.', 404
         return user_schema.dump(user)
 
+    @session_required
+    @require_group('wheel')
+    @api.response(404, 'User not found')
+    @api.response(200, 'Success')
+    @api.expect_url_var('id', "The user's unique identifier.")
+    def delete( self, uuid ):
+        '''Deactivate a user.'''
+        user = user_controller.get_uuid( uuid )
+        if user is None:
+            return 'User not found.', 404
+        user_controller.deactivate(uuid)
+
+        return user_schema.dump(user), 201
+
+# update
     @session_required
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''
 
-        user = user_controller.get_guid(guid=uuid)
+        user = user_controller.get_uuid(uuid=uuid)
         if user is None:
             return "User not found.", 404
 
@@ -123,9 +139,10 @@ class User(Resource):
         if 'password' in request.json:
             password=request.json['password']
 
-        user_result = user_controller.update(user, username, email, password)
+        user_result = user_controller.update( user, username=username, email=email, password=password )
 
         if user_result is None:
             return "Failed to update user.", 400
         # return the ma.schema version appropriate to show a user
         return user_schema.dump(user_result), 201
+

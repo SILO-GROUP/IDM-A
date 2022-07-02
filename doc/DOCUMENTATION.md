@@ -16,6 +16,30 @@ Methods on users, groups and sessions, while restricted to built-in groups, are 
 
 No, we're not using Ruby on Rails to blockchain your NFT to the kubernetes when we say "RAILS ON CRUD".  What this phrase means is that IDM/A is essentially a CRUD app for users, groups, and sessions.  The access control mechanisms are just a layer of rails on top of that to secure the use of those CRUD features.
 
+
+## Module Structure
+Modules are divided up into a few different common files, with exception to the core module (Pantheon) which mainly contains shared resources and one-offs important to the transparent middleware.
+
+### API.py
+This contains route and method declarations for the endpoint.  This is the user-facing code.
+
+### APIModels.py
+This is where schemas or models for user input expected in methods declared in API.py are stored.
+
+### Controller.py
+Controller code goes here.  This is the layer that interacts with the database and performs any additional logic necessary for feature implementation.  It is important that logic go here so that CLI utilities can consume the controller without re-implementing security logic.
+
+### DatabaseModels.py
+ORM models go here.  These are objects that represent table structure in the database.
+
+### Decorators.py
+Various decorators are used to create security rules around various methods, usually specific to the module.
+
+### ViewSchemas.py
+These are output schemas specifically for output sent to the user.  Output must fit into these schemas to be sent.  
+
+This is a rather important piece as it prevents data you would not want to show to the user (unless you explicitly define it to be visible).
+
 ## Groups and Methods
 
 ### Methods
@@ -51,13 +75,13 @@ IDM/A
 ### Group/Method Associations
 *These are incomplete.
 
-| GROUP                 | Provides                                                               |
-|-----------------------|------------------------------------------------------------------------|
-| wheel                 | Unrestricted access to all authenticated and group-restricted actions. |
-| sys-create_users      | Optionally required for creating users.                                |
-| sys-list_all_users    | List all users and their associated groups.                            |
-| sys-modify_all_users  | Modify user attributes.                                                |
-| sys-list_all_groups   | List all groups and their associated members.                          |
-| sys-modify_all_groups | Modify group attributes, including membership.                         |
-| sys-list_all_sessions | List all sessions and their associated users.                          |
+| GROUP                 | Provides                                                                                                                                     |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| wheel                 | Unrestricted access to all authenticated and group-restricted actions.                                                                       |
+| sys-create_users      | Optionally required for creating users.                                                                                                      |
+| sys-list_all_users    | List all users and their associated groups.                                                                                                  |
+| sys-modify_all_users  | Modify user attributes.  Does not apply to group membership.  Adding a user to or from a group is an operation on that group, not that user. |
+| sys-list_all_groups   | List all groups and their associated members. Should be restricted to admins.                                                                |
+| sys-modify_all_groups | Modify group attributes, including membership.                                                                                               |
+| sys-list_all_sessions | List all sessions and their associated users.  Should be restricted to admins.                                                               |
  | 
