@@ -1,7 +1,5 @@
 from flask_restx import Resource
-from flask import request, g
-from functools import wraps
-from modules.Pantheon.Factory import app
+from flask import request
 from modules.Sessions.APIModels import SessionFields, SessionCreateFields, InsecureSessionFields
 from modules.Pantheon.Namespaces import session_api as api
 from modules.Sessions.Controller import session_controller
@@ -51,7 +49,7 @@ class Sessions(Resource):
     # as to an administrative group.  not yet implemented.
     def delete(self):
         '''Destroy a session.'''
-        session = session_controller.destroy( uuid=request.json['uuid'] )
+        session = session_controller.destroy( suid=request.json['uuid'] )
         if session is None:
             return 'No session could be created.', 401
 
