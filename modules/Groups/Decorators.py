@@ -5,7 +5,8 @@ from modules.Groups.GroupMappings import group_mappings
 
 # returns true if user is in that group or in the superuser group
 def in_group_or_superuser( user, group_name ):
-    if group_name in [ usergroup.name for usergroup in user.groups ] or group_mappings.USERS_SUPERUSER in [usergroup.name for usergroup in user.groups]:
+    group_set = [ usergroup.name for usergroup in user.groups ]
+    if group_name in group_set or group_mappings.USERS_SUPERUSER in group_set:
         return True
     else:
         return False
