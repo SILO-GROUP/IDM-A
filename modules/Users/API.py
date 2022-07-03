@@ -9,6 +9,7 @@ from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
 
+
 # create
 @api.route('/create')
 class User(Resource):
@@ -47,27 +48,27 @@ class Users(Resource):
 
 
 # require wheel to prevent enumeration of users
-@api.route('/id/<id>')
-@api.expect_url_var('id', "The user's unique identifier.")
-class User(Resource):
-    @session_required
-    @require_group('wheel')
-    @api.response(404, 'User not found')
-    @api.response(200, 'Success')
-    def get( self, id ):
-        '''Fetch a user given its identifier.'''
-        user = user_controller.get_id(id=id)
-        if user is None:
-            return 'User not found.', 404
-        return user_schema.dump(user)
+#@api.route('/id/<id>')
+#class User(Resource):
+#    @session_required
+#    @require_group('wheel')
+#    @api.response(404, 'User not found')
+#    @api.response(200, 'Success')
+#    @api.expect_url_var('id', "The user's unique identifier.")
+#    def get( self, id ):
+#        '''Fetch a user given its identifier.'''
+#        user = user_controller.get_id(id=id)
+#        if user is None:
+#            return 'User not found.', 404
+#        return user_schema.dump(user)
 
 
 @api.route('/username/<username>')
-@api.expect_url_var('username', "The user's username.")
-@api.response(404, 'User not found')
-@api.response(200, 'Success')
 class User(Resource):
     @api.no_session_required
+    @api.expect_url_var('username', "The user's username.")
+    @api.response(404, 'User not found')
+    @api.response(200, 'Success')
     def get( self, username ):
         '''Fetch a user given its username.'''
         user = user_controller.get_username(username=username)
@@ -77,11 +78,11 @@ class User(Resource):
 
 
 @api.route('/email/<email>')
-@api.expect_url_var('email', "The user's email address.")
-@api.response(404, 'User not found')
-@api.response(200, model=UserFields, description='Success')
 class User(Resource):
     @api.no_session_required
+    @api.expect_url_var('email', "The user's email address.")
+    @api.response(404, 'User not found')
+    @api.response(200, model=UserFields, description='Success')
     def get( self, email ):
         '''Fetch a user given its email address.'''
         user = user_controller.get_email(email=email)
@@ -90,24 +91,13 @@ class User(Resource):
         return user_schema.dump( user )
 
 
-@api.route('/uuid/<uuid>')
-@api.expect_url_var('uuid', "The user's UUID.")
-@api.response(404, 'User not found.')
-@api.response(code=200, model=UserFields, description='')
+@api.route('/uuid/<uuid>/deactivate')
 class User(Resource):
-    @session_required
-    def get( self, uuid ):
-        '''Fetch a user given its UUID.'''
-        user = user_controller.get_uuid(uuid=uuid)
-        if user is None:
-            return 'User not found.', 404
-        return user_schema.dump(user)
-
     @session_required
     @require_group('wheel')
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
-    @api.expect_url_var('id', "The user's unique identifier.")
+    @api.expect_url_var('uuid', "The user's UUID.")
     def delete( self, uuid ):
         '''Deactivate a user.'''
         user = user_controller.get_uuid( uuid )
@@ -116,6 +106,37 @@ class User(Resource):
         user_controller.deactivate(uuid)
 
         return user_schema.dump(user), 201
+
+
+@api.route('/uuid/<uuid>/activate')
+class User(Resource):
+    @session_required
+    @require_group('wheel')
+    @api.response(404, 'User not found')
+    @api.response(200, 'Success')
+    @api.expect_url_var('uuid', "The user's UUID.")
+    def post( self, uuid ):
+        '''Activate a user manually.'''
+        user = user_controller.get_uuid( uuid )
+        if user is None:
+            return 'User not found.', 404
+        user_controller.activate(uuid)
+
+        return user_schema.dump(user), 201
+
+
+@api.route('/uuid/<uuid>')
+class User(Resource):
+    @session_required
+    @api.expect_url_var('uuid', "The user's UUID.")
+    @api.response(404, 'User not found.')
+    @api.response(code=200, model=UserFields, description='')
+    def get( self, uuid ):
+        '''Fetch a user given its UUID.'''
+        user = user_controller.get_uuid(uuid=uuid)
+        if user is None:
+            return 'User not found.', 404
+        return user_schema.dump(user)
 
 # update
     @session_required
@@ -146,3 +167,18 @@ class User(Resource):
         # return the ma.schema version appropriate to show a user
         return user_schema.dump(user_result), 201
 
+# delete
+    @session_required
+    @api.expect_url_var('uuid', "The user's UUID.")
+    @api.response(404, 'User not found.')
+    @api.response(code=200, description='')
+    def delete( self, uuid ):
+        '''Delete a user.'''
+        user = user_controller.get_uuid(uuid=uuid)
+        if user is None:
+            return 'User not found.', 404
+
+        result = user_controller.delete( uuid )
+        if not result:
+            return 'Could not delete user', 401
+        return None, 200

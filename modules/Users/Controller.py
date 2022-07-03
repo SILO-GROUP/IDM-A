@@ -65,9 +65,12 @@ class UserController:
         user = self.get_uuid(uuid)
         if user is None:
             return None
-        user.active = True
-        db.session.commit()
-
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            return True
+        except exc.IntegrityError:
+            return False
     # create a user
     def create(self, username, email, password):
         try:
