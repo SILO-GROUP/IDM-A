@@ -22,6 +22,7 @@ class GroupMappings:
         self.GROUPS_DELETE =settings.get('groups', 'DELETE')
         self.GROUPS_MODIFY_MEMBERS = settings.get('groups', 'MODIFY_MEMBERS')
         self.SESSIONS_LIST_ALL = settings.get('sessions', 'LIST_ALL')
+        self.SESSIONS_DESTROY = settings.get('sessions', 'DESTROY')
 
 
 group_mappings = GroupMappings()
