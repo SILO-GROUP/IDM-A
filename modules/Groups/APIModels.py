@@ -32,7 +32,7 @@ GroupCreateFields = group_api.model(
 )
 
 GroupUpdateFields = group_api.model(
-    'update_user', {
+    'update_group', {
         'name': fields.String( required=True, description='New group name.' )
     }
 )

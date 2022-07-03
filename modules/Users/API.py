@@ -143,7 +143,7 @@ class User(Resource):
 class User(Resource):
     @session_required
     @api.expect_url_var('uuid', "The user's UUID.")
-    @api.expect(UserUpdateFields)
+    @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''
