@@ -77,5 +77,13 @@ class Sessions(Resource):
             result = session_controller.destroy( suid )
             if not result:
                 return "Could not destroy session.", 401
+            return "Successfully destroyed the session.", 200
 
-        return None, 200
+
+        return "User '{0}' ({1}) is not allowed to destroy the session '{2}' for user '{3}' ({4}).".format(
+            caller.username,
+            caller.uuid,
+            target_session.suid,
+            target_session.user.username,
+            target.uuid
+        ), 401
