@@ -46,7 +46,6 @@ class Users(Resource):
 
         return users_schema.dump(users)
 
-
 # require wheel to prevent enumeration of users
 #@api.route('/id/<id>')
 #class User(Resource):
@@ -138,9 +137,13 @@ class User(Resource):
             return 'User not found.', 404
         return user_schema.dump(user)
 
+
 # update
+@api.route('/uuid/<uuid>')
+class User(Resource):
     @session_required
-    @api.input_schema(UserUpdateFields)
+    @api.expect_url_var('uuid', "The user's UUID.")
+    @api.expect(UserUpdateFields)
     @api.response(404, 'User not found.')
     def put( self, uuid ):
         '''Update a user's attributes.'''

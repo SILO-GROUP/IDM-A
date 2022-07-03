@@ -25,6 +25,7 @@ class UserSchema(ma.Schema):
         fields = (
             "username",
             "uuid",
+            "email",
             'creation_date',
             'email_verified',
             'identity_verified',
