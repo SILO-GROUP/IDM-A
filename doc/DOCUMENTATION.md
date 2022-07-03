@@ -40,6 +40,9 @@ These are output schemas specifically for output sent to the user.  Output must 
 
 This is a rather important piece as it prevents data you would not want to show to the user (unless you explicitly define it to be visible).
 
+### Associations.py
+Some modules have this file and some do not need it.  The associations file contains Database Models meant to represent association tables.
+
 ## Groups and Methods
 
 ### Methods

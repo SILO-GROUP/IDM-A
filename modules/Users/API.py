@@ -8,7 +8,7 @@ from modules.Users.ViewSchemas import user_schema, users_schema
 from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group
 from modules.Users.Decorators import require_same_user
-
+from modules.Groups.GroupMappings import group_mappings
 
 # create
 @api.route('/create')
@@ -34,7 +34,7 @@ class User(Resource):
 @api.route('/all')
 class Users(Resource):
     @session_required
-    @require_group('sys-enumerate_users')
+    @require_group( group_mappings.USERS_LIST_ALL )
     @api.output_schema( UserFields )
     @api.response( 404, 'No users found.' )
     @api.response( 200, 'Success' )
@@ -64,7 +64,7 @@ class Users(Resource):
 
 @api.route('/username/<username>')
 class User(Resource):
-    @api.no_session_required
+    @session_required
     @api.expect_url_var('username', "The user's username.")
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
@@ -78,7 +78,7 @@ class User(Resource):
 
 @api.route('/email/<email>')
 class User(Resource):
-    @api.no_session_required
+    @session_required
     @api.expect_url_var('email', "The user's email address.")
     @api.response(404, 'User not found')
     @api.response(200, model=UserFields, description='Success')
@@ -93,7 +93,7 @@ class User(Resource):
 @api.route('/uuid/<uuid>/deactivate')
 class User(Resource):
     @session_required
-    @require_group('wheel')
+    @require_group( group_mappings.USERS_DEACTIVATE )
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
     @api.expect_url_var('uuid', "The user's UUID.")
@@ -110,7 +110,7 @@ class User(Resource):
 @api.route('/uuid/<uuid>/activate')
 class User(Resource):
     @session_required
-    @require_group('wheel')
+    @require_group( group_mappings.USERS_ACTIVATE )
     @api.response(404, 'User not found')
     @api.response(200, 'Success')
     @api.expect_url_var('uuid', "The user's UUID.")
@@ -142,6 +142,7 @@ class User(Resource):
 @api.route('/uuid/<uuid>')
 class User(Resource):
     @session_required
+    @require_group(group_mappings.USERS_MODIFY)
     @api.expect_url_var('uuid', "The user's UUID.")
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
@@ -172,6 +173,7 @@ class User(Resource):
 
 # delete
     @session_required
+    @require_group(group_mappings.USERS_DELETE)
     @api.expect_url_var('uuid', "The user's UUID.")
     @api.response(404, 'User not found.')
     @api.response(code=200, description='')
