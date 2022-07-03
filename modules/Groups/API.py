@@ -2,19 +2,20 @@
 from flask_restx import Resource
 from flask import request, g
 
-from modules.Groups.APIModels import GroupFields, GroupCreateFields, GroupMemberModifyFields
+from modules.Groups.APIModels import GroupFields, GroupCreateFields, GroupMemberModifyFields, GroupUpdateFields
 from modules.Pantheon.Namespaces import group_api as api
 from modules.Groups.Controller import group_controller
 from modules.Users.Controller import user_controller
 from modules.Groups.ViewSchemas import group_schema, groups_schema
 from modules.Sessions.Decorators import *
 from modules.Groups.Decorators import *
+from modules.Groups.GroupMappings import group_mappings
 
 
 @api.route('/all')
 class Groups(Resource):
     @session_required
-    @require_group('sys-list_groups')
+    @require_group( group_mappings.GROUPS_LIST_ALL )
     @api.output_schema(GroupFields)
     def get(self):
         '''List all groups.'''
@@ -27,6 +28,8 @@ class Groups(Resource):
 
 @api.route('/create')
 class Group(Resource):
+    @session_required
+    @require_group( group_mappings.GROUPS_CREATE )
     @api.input_schema(GroupCreateFields)
     @api.response( 201, 'Group created.' )
     @api.response( 400, 'Failed to create group.' )
@@ -43,19 +46,26 @@ class Group(Resource):
 
 
 @api.route('/guid/<guid>')
-@api.expect_url_var('guid', 'The group GUID.')
-@api.response( 404, 'Group not found.' )
 class Group(Resource):
-    def get(self, group_uuid ):
+    @session_required
+    @require_group(group_mappings.GROUPS_SHOW_MEMBERS)
+    @api.expect_url_var('guid', 'The group GUID.')
+    @api.response(404, 'Group not found.')
+    def get(self, guid ):
         '''Get group details by group UUID.'''
-        group = group_controller.get_guid(guid=group_uuid)
+        group = group_controller.get_guid(guid=guid)
         if group is None:
             return 'Group not found.', 404
         return group_schema.dump(group)
 
-    def put( self, group_uuid ):
+    @session_required
+    @require_group(group_mappings.GROUPS_MODIFY)
+    @api.expect_url_var('guid', 'The group GUID.')
+    @api.response(404, 'Group not found.')
+    @api.input_schema(GroupUpdateFields)
+    def put( self, guid ):
         '''Rename a group.'''
-        group = group_controller.get_guid(guid=group_uuid)
+        group = group_controller.get_guid(guid=guid)
         if group is None:
             return 'Group not found.', 404
 
@@ -65,6 +75,8 @@ class Group(Resource):
 
         return group_schema.dump( result )
 
+    @session_required
+    @require_group(group_mappings.GROUPS_DELETE)
     @api.expect_url_var('guid', 'The group GUID.')
     @api.response(404, 'Group not found.')
     @api.response(401, 'Group not empty.')
@@ -79,10 +91,11 @@ class Group(Resource):
 
 
 @api.route('/name/<name>')
-@api.expect_url_var('name', 'The group name.')
-@api.response( 404, 'Group not found.' )
 class Group(Resource):
     @session_required
+    @require_group(group_mappings.GROUPS_SHOW_MEMBERS)
+    @api.expect_url_var('name', 'The group name.')
+    @api.response(404, 'Group not found.')
     def get(self, name ):
         '''Get group details by group name.'''
         group = group_controller.get_name(name=name)
@@ -93,13 +106,12 @@ class Group(Resource):
 
 
 @api.route('/guid/<guid>/members')
-@api.expect_url_var('guid', 'The group GUID.')
-@api.response( 404, 'Group not found.' )
 class Group(Resource):
     @session_required
-    @require_group('sys-modify_groups')
+    @require_group(group_mappings.GROUPS_MODIFY_MEMBERS)
     @api.input_schema(GroupMemberModifyFields)
-    # only wheel and modify-groups should be allowed to do this
+    @api.expect_url_var('guid', 'The group GUID.')
+    @api.response(404, 'Group not found.')
     def put(self, guid ):
         '''Add a user to a group.'''
         group = group_controller.get_guid( guid=guid )
@@ -116,6 +128,8 @@ class Group(Resource):
             return 'Failed to append group.', 400
         return group_schema.dump(result), 201
 
+    @session_required
+    @require_group(group_mappings.GROUPS_MODIFY_MEMBERS)
     @api.input_schema(GroupMemberModifyFields)
     @api.response(404, 'Group not found.')
     @api.response(401, 'User not in group.')
