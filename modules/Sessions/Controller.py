@@ -37,5 +37,16 @@ class SessionController:
         session = db.session.query(SessionModel).filter_by(suid=suid).first()
         return session
 
+    def destroy(self, suid):
+        session = self.get_token( suid )
+        if session is None:
+            return None
+        try:
+            db.session.delete(session)
+            db.session.commit()
+            return True
+        except exc.IntegrityError:
+            return False
+
 
 session_controller = SessionController()

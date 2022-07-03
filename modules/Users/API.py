@@ -46,21 +46,6 @@ class Users(Resource):
 
         return users_schema.dump(users)
 
-# require wheel to prevent enumeration of users
-#@api.route('/id/<id>')
-#class User(Resource):
-#    @session_required
-#    @require_group('wheel')
-#    @api.response(404, 'User not found')
-#    @api.response(200, 'Success')
-#    @api.expect_url_var('id', "The user's unique identifier.")
-#    def get( self, id ):
-#        '''Fetch a user given its identifier.'''
-#        user = user_controller.get_id(id=id)
-#        if user is None:
-#            return 'User not found.', 404
-#        return user_schema.dump(user)
-
 
 @api.route('/username/<username>')
 class User(Resource):

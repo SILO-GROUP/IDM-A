@@ -2,7 +2,6 @@ import configparser
 from modules.Pantheon.Config import system_config
 
 config_file_path = '{0}/groups.ini'.format( system_config.modules_conf_path )
-print(config_file_path)
 
 
 class GroupMappings:
