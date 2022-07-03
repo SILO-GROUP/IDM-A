@@ -17,6 +17,4 @@ class Config:
         self.modules_conf_path = '{0}/../../{1}'.format( dir_path, settings.get('modules', 'confs_path') )
 
 
-
-
 system_config = Config()
