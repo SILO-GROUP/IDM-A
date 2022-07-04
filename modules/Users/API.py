@@ -128,7 +128,6 @@ class User(Resource):
 @api.route('/uuid/<uuid>')
 class User(Resource):
     @session_required
-    @require_group(group_mappings.USERS_MODIFY)
     @api.expect_url_var('uuid', "The user's UUID.")
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
@@ -137,7 +136,7 @@ class User(Resource):
     def put( self, uuid ):
         '''Update a user's attributes.'''
         #1. Fetch caller UUID
-        #2. Fetch target session's user's UUID
+        #2. Fetch target user's UUID
         #3. If same, allow.
         #4. If not, check for group membership allowance or superuser.
         #5. Deny first, but if any, allow
