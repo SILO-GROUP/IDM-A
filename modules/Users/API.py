@@ -6,9 +6,10 @@ from modules.Pantheon.Namespaces import user_api as api
 from modules.Users.Controller import user_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
 from modules.Sessions.Decorators import session_required
-from modules.Groups.Decorators import require_group
-from modules.Users.Decorators import require_same_user
+from modules.Groups.Decorators import require_group, in_group_or_superuser
 from modules.Groups.GroupMappings import group_mappings
+from modules.Sessions.Controller import session_controller
+from flask import g
 
 # create
 @api.route('/create')
@@ -131,32 +132,55 @@ class User(Resource):
     @api.expect_url_var('uuid', "The user's UUID.")
     @api.input_schema(UserUpdateFields)
     @api.response(404, 'User not found.')
+    # don't use @require group, here.  Need to add check against target user to allow operation on same user as well
+    # as to an administrative group.  not yet implemented.
     def put( self, uuid ):
         '''Update a user's attributes.'''
+        #1. Fetch caller UUID
+        #2. Fetch target session's user's UUID
+        #3. If same, allow.
+        #4. If not, check for group membership allowance or superuser.
+        #5. Deny first, but if any, allow
+        caller = g.session.user
+        if caller is None:
+            return "Invalid session used to call method.", 403
 
-        user = user_controller.get_uuid(uuid=uuid)
-        if user is None:
-            return "User not found.", 404
+        target = user_controller.get_uuid( uuid=uuid )
+        if target is None:
+            return "User being operated on was not found.", 404
 
-        username=None
-        email=None
-        password=None
+        allowed = False
 
-        if 'username' in request.json:
-            username=request.json['username']
-        if 'email' in request.json:
-            email=request.json['email']
-        if 'password' in request.json:
-            password=request.json['password']
+        if caller.uuid == target.uuid:
+            allowed = True
+        if in_group_or_superuser( caller, group_mappings.USERS_MODIFY ):
+            allowed = True
 
-        user_result = user_controller.update( user, username=username, email=email, password=password )
+        if allowed:
+            username = None
+            email = None
+            password = None
 
-        if user_result is None:
-            return "Failed to update user.", 400
-        # return the ma.schema version appropriate to show a user
-        return user_schema.dump(user_result), 201
+            if 'username' in request.json:
+                username = request.json['username']
+            if 'email' in request.json:
+                email = request.json['email']
+            if 'password' in request.json:
+                password = request.json['password']
 
-# delete
+            user_result = user_controller.update(user, username=username, email=email, password=password)
+
+            if user_result is None:
+                return "Failed to update user.", 400
+
+        return "User '{0}' ({1}) is not allowed to modify attributes for user '{2}' ({3}).".format(
+            caller.username,
+            caller.uuid,
+            target.username,
+            target.uuid
+        ), 401
+
+    # delete
     @session_required
     @require_group(group_mappings.USERS_DELETE)
     @api.expect_url_var('uuid', "The user's UUID.")

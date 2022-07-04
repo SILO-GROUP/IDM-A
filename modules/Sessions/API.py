@@ -55,10 +55,10 @@ class Sessions(Resource):
         #2. Fetch target session's user's UUID
         #3. If same, allow.
         #4. If not, check for group membership allowance or superuser.
-        #5. If any, allow.  If none, deny.
+        #5. Deny first, but if any, allow
         caller = g.session.user
         if caller is None:
-            return "Invalid session used to call method.", 401
+            return "Invalid session used to call method.", 403
 
         target_session = session_controller.get_token( suid=suid )
         if target_session is None:
@@ -76,9 +76,8 @@ class Sessions(Resource):
         if allowed:
             result = session_controller.destroy( suid )
             if not result:
-                return "Could not destroy session.", 401
+                return "Could not destroy session.", 500
             return "Successfully destroyed the session.", 200
-
 
         return "User '{0}' ({1}) is not allowed to destroy the session '{2}' for user '{3}' ({4}).".format(
             caller.username,
