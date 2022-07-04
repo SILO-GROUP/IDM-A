@@ -10,6 +10,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = system_config.db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['ENV'] = system_config.environment
     db.init_app(app)
     return app
 

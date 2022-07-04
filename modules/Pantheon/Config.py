@@ -15,6 +15,10 @@ class Config:
         self.version = settings.get( 'branding', 'version' )
         self.description = settings.get( 'branding', 'description' )
         self.modules_conf_path = '{0}/../../{1}'.format( dir_path, settings.get('modules', 'confs_path') )
+        self.port = settings.get('API', 'port')
+        self.bind_addr = settings.get('API', 'bind_addr')
+        self.debug = settings.getboolean('API', 'debug')
+        self.environment = settings.get('API', 'environment')
 
 
 system_config = Config()
