@@ -16,8 +16,16 @@ class SessionController:
             return None
         return sessions
 
-    def create( self, uuid, password ):
-        user = user_controller.get_uuid(uuid)
+    def create( self, password, uuid=None, username=None ):
+        if uuid is None and username is None:
+            return None
+
+        if uuid is None and username is not None:
+            user = user_controller.get_username( username )
+
+        if username is None and uuid is not None:
+            user = user_controller.get_uuid( uuid )
+
         if user is None:
             return None
         else:

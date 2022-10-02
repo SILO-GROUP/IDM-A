@@ -10,7 +10,7 @@ Actions are denied unless an explicit exception is made in the API code.  For in
 
 ## Wheel is King
 
-Methods on users, groups and sessions, while restricted to built-in groups, are universally allowed only to members of the group named "wheel".
+Methods on users, groups and sessions, while restricted to built-in groups, are universally allowed only to members of the supergroup whose default name is "wheel".  Group names can be configured.
 
 ## RAILS ON CRUD
 

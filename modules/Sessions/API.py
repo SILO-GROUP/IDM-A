@@ -1,12 +1,12 @@
 from flask_restx import Resource
 from flask import request
-from modules.Sessions.APIModels import SessionFields, SessionCreateFields, InsecureSessionFields
+from modules.Sessions.APIModels import UUIDSessionCreateFields, InsecureSessionFields, UsernameSessionCreateFields
 from modules.Pantheon.Namespaces import session_api as api
 from modules.Sessions.Controller import session_controller
 from modules.Sessions.ViewSchemas import session_schema, sessions_schema
 from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group, in_group_or_superuser
-from modules.Groups.GroupMappings import group_mappings
+from modules.Groups.Config import module_config as group_mappings
 from flask import g
 
 
@@ -24,16 +24,31 @@ class Sessions(Resource):
         return sessions_schema.dump(sessions)
 
 
-@api.route('/create')
+@api.route('/create/uuid')
 class Sessions(Resource):
     @api.no_session_required
-    @api.doc('create_session')
-    @api.expect(SessionCreateFields)
+    @api.doc('create_session_uuid')
+    @api.expect(UUIDSessionCreateFields)
     @api.response(201, 'Session created.')
     @api.response(400, 'Failed to create session.')
     def post(self):
         '''Create a session.'''
         session = session_controller.create( uuid=request.json['uuid'], password=request.json['password'] )
+        if session is None:
+            return 'No session could be created.', 401
+
+        return session_schema.dump(session), 201
+
+@api.route('/create/username')
+class Sessions(Resource):
+    @api.no_session_required
+    @api.doc('create_session_username')
+    @api.expect(UsernameSessionCreateFields)
+    @api.response(201, 'Session created.')
+    @api.response(400, 'Failed to create session.')
+    def post(self):
+        '''Create a session.'''
+        session = session_controller.create( username=request.json['username'], password=request.json['password'] )
         if session is None:
             return 'No session could be created.', 401
 

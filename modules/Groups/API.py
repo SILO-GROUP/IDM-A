@@ -9,13 +9,13 @@ from modules.Users.Controller import user_controller
 from modules.Groups.ViewSchemas import group_schema, groups_schema
 from modules.Sessions.Decorators import *
 from modules.Groups.Decorators import *
-from modules.Groups.GroupMappings import group_mappings
+from modules.Groups.Config import module_config
 
 
 @api.route('/all')
 class Groups(Resource):
     @session_required
-    @require_group( group_mappings.GROUPS_LIST_ALL )
+    @require_group( module_config.GROUPS_LIST_ALL )
     @api.output_schema(GroupFields)
     def get(self):
         '''List all groups.'''
@@ -29,7 +29,7 @@ class Groups(Resource):
 @api.route('/create')
 class Group(Resource):
     @session_required
-    @require_group( group_mappings.GROUPS_CREATE )
+    @require_group( module_config.GROUPS_CREATE )
     @api.input_schema(GroupCreateFields)
     @api.response( 201, 'Group created.' )
     @api.response( 400, 'Failed to create group.' )
@@ -48,7 +48,7 @@ class Group(Resource):
 @api.route('/guid/<guid>')
 class Group(Resource):
     @session_required
-    @require_group(group_mappings.GROUPS_SHOW_MEMBERS)
+    @require_group(module_config.GROUPS_SHOW_MEMBERS)
     @api.expect_url_var('guid', 'The group GUID.')
     @api.response(404, 'Group not found.')
     def get(self, guid ):
@@ -59,7 +59,7 @@ class Group(Resource):
         return group_schema.dump(group)
 
     @session_required
-    @require_group(group_mappings.GROUPS_MODIFY)
+    @require_group(module_config.GROUPS_MODIFY)
     @api.expect_url_var('guid', 'The group GUID.')
     @api.response(404, 'Group not found.')
     @api.input_schema(GroupUpdateFields)
@@ -76,7 +76,7 @@ class Group(Resource):
         return group_schema.dump( result )
 
     @session_required
-    @require_group(group_mappings.GROUPS_DELETE)
+    @require_group(module_config.GROUPS_DELETE)
     @api.expect_url_var('guid', 'The group GUID.')
     @api.response(404, 'Group not found.')
     @api.response(401, 'Group not empty.')
@@ -93,7 +93,7 @@ class Group(Resource):
 @api.route('/name/<name>')
 class Group(Resource):
     @session_required
-    @require_group(group_mappings.GROUPS_SHOW_MEMBERS)
+    @require_group(module_config.GROUPS_SHOW_MEMBERS)
     @api.expect_url_var('name', 'The group name.')
     @api.response(404, 'Group not found.')
     def get(self, name ):
@@ -108,7 +108,7 @@ class Group(Resource):
 @api.route('/guid/<guid>/members')
 class Group(Resource):
     @session_required
-    @require_group(group_mappings.GROUPS_MODIFY_MEMBERS)
+    @require_group(module_config.GROUPS_MODIFY_MEMBERS)
     @api.input_schema(GroupMemberModifyFields)
     @api.expect_url_var('guid', 'The group GUID.')
     @api.response(404, 'Group not found.')
@@ -129,7 +129,7 @@ class Group(Resource):
         return group_schema.dump(result), 201
 
     @session_required
-    @require_group(group_mappings.GROUPS_MODIFY_MEMBERS)
+    @require_group(module_config.GROUPS_MODIFY_MEMBERS)
     @api.input_schema(GroupMemberModifyFields)
     @api.response(404, 'Group not found.')
     @api.response(401, 'User not in group.')

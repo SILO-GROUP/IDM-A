@@ -7,9 +7,10 @@ from modules.Users.Controller import user_controller
 from modules.Users.ViewSchemas import user_schema, users_schema
 from modules.Sessions.Decorators import session_required
 from modules.Groups.Decorators import require_group, in_group_or_superuser
-from modules.Groups.GroupMappings import group_mappings
+from modules.Groups.Config import module_config as group_mappings
 from modules.Sessions.Controller import session_controller
 from flask import g
+
 
 # create
 @api.route('/create')

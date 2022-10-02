@@ -4,10 +4,18 @@
 from flask_restx import fields
 from modules.Pantheon.Namespaces import session_api
 
-SessionCreateFields = session_api.model(
-    'create_session',
+UUIDSessionCreateFields = session_api.model(
+    'create_session_uuid',
     {
         'uuid': fields.String( required=True, description="The user UUID to log in as." ),
+        'password': fields.String( required=True, description="The password of the user trying to log in.")
+    }
+)
+
+UsernameSessionCreateFields = session_api.model(
+    'create_session_username',
+    {
+        'username': fields.String( required=True, description="The username to log in as." ),
         'password': fields.String( required=True, description="The password of the user trying to log in.")
     }
 )
@@ -27,7 +35,6 @@ UGroupFields = session_api.model(
     }
 )
 
-
 # OUTPUT fields for showing to the group
 # @api.marshal_with
 SessionEmbeddedUser = session_api.model(
@@ -37,7 +44,6 @@ SessionEmbeddedUser = session_api.model(
         'groups': fields.List( fields.Nested( UGroupFields, many=True ))
     }
 )
-
 
 InsecureSessionFields = session_api.model(
     'insecure_session_view',
