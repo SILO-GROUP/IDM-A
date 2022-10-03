@@ -7,8 +7,12 @@ class ModuleConfig(Config):
         self.send_validation_email = self.parserobj.get('email', 'send_validation_email')
 
         self.smtp_server = self.parserobj.get('email', 'server')
-        self.smtp_port = self.parserobj.get('email', 'port')
-        self.smtp_usetls = self.parserobj.get('email', 'usetls')
+        self.smtp_port = self.parserobj.getint('email', 'port')
+        self.smtp_use_tls = self.parserobj.getboolean('email', 'use_tls')
+        self.smtp_use_ssl = self.parserobj.getboolean('email', 'use_ssl')
+        self.smtp_username = self.parserobj.get('email', 'username')
+        self.smtp_password = self.parserobj.get('email', 'password')
+        self.registration_reply_address = self.parserobj.get('email', 'registration_reply_address')
 
 
 module_config = ModuleConfig()

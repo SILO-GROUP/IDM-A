@@ -21,5 +21,5 @@ class EmailValidationModel(db.Model):
 
 
     def __repr__(self):
-        return '<Group %s>' % self.guid
+        return '<Group %s>' % self.validation_token
 
