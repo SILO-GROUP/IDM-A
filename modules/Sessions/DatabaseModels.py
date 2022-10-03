@@ -18,7 +18,7 @@ class SessionModel(db.Model):
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
 
     # MTO
-    owner_id = Column(String(37), ForeignKey('user.uuid', ondelete="CASCADE"), nullable=False, unique=True)
+    owner_id = Column(String(37), ForeignKey('user.uuid', ondelete="CASCADE"), nullable=False, unique=False)
     # owner = relationship( 'UserModel', backref="sessions")
     # user = relationship( 'UserModel', back_populates="sessions" )
     # user = relationship( 'UserModel', backref="sessions" )

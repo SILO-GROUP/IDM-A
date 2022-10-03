@@ -35,9 +35,10 @@ class Sessions(Resource):
         '''Create a session.'''
         session = session_controller.create( uuid=request.json['uuid'], password=request.json['password'] )
         if session is None:
-            return 'No session could be created.', 401
+            return 'Invalid Credentials.', 403
 
         return session_schema.dump(session), 201
+
 
 @api.route('/create/username')
 class Sessions(Resource):
@@ -50,7 +51,7 @@ class Sessions(Resource):
         '''Create a session.'''
         session = session_controller.create( username=request.json['username'], password=request.json['password'] )
         if session is None:
-            return 'No session could be created.', 401
+            return 'Invalid Credentials', 403
 
         return session_schema.dump(session), 201
 

@@ -1,5 +1,5 @@
 from modules.Pantheon.Factory import db
-from sqlalchemy import Column
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, UniqueConstraint
 import uuid
 from datetime import datetime
 
@@ -14,9 +14,11 @@ class EmailValidationModel(db.Model):
     id =  Column( Integer, primary_key=True, autoincrement=True, nullable=False )
     creation_date = Column( TIMESTAMP, default=datetime.utcnow, nullable=False )
     validation_token  = Column(String(37), name="validation_token", default=generate_uuid, nullable=False, unique=True)
-    assoc_uuid  = Column(Integer, ForeignKey('user.uuid'), unique=True, nullable=False)
+    assoc_uuid  = Column(Integer, ForeignKey('user.uuid'), unique=False, nullable=False)
 
     UniqueConstraint( 'id', 'assoc_uuid', 'validation_token' )
+
+
 
     def __repr__(self):
         return '<Group %s>' % self.guid
