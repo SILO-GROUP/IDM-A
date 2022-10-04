@@ -69,8 +69,11 @@ class EmailController:
 
         return True
 
-    def validate_challenge(self):
-        pass
+    def validate_challenge( self, challenge ):
+        user = user_controller.get_uuid( challenge.assoc_uuid )
+        user.email_verified = True
+        db.session.commit()
+        return True
 
     def get_all_challenges(self):
         challenges = EmailValidationModel.query.all()

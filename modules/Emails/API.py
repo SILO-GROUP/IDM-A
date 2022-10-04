@@ -6,6 +6,8 @@ from modules.Groups.Config import module_config as group_mappings
 from modules.Emails.Controller import email_controller
 from modules.Users.Controller import user_controller
 from modules.Emails.ViewSchemas import email_challenge_schema
+from flask import g
+
 
 @api.route('/challenge/generate/<uuid>')
 @api.expect_url_var('uuid', 'The user UUID to create the challenge for.')
@@ -25,19 +27,17 @@ class EmailValidation(Resource):
             return "User not found.", 404
 
 
-@api.route('/challenge/send')
-class EmailValidation(Resource):
-    @session_required
-    def post(self):
-        '''Send a previously generated validation challenge.'''
-        return "Not implemented.", 500
-
-
 @api.route('/challenge/answer/<token>')
 class EmailValidation(Resource):
-    @session_required
-    def get(self):
+    def get(self, token):
         '''Answer a validation challenge.'''
+        challenge = email_controller.get_challenge_by_token( token )
+        if challenge is None:
+            return "Invalid token.", 404
+
+        if email_controller.validate_challenge( challenge ):
+            return "Challenge validated.", 200
+
         return "Not implemented.", 500
 
 
