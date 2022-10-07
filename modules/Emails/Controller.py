@@ -4,6 +4,7 @@ from modules.Pantheon.Factory import db, app
 from sqlalchemy import exc
 from modules.Users.Controller import user_controller
 from flask_mail import Mail, Message
+from datetime import datetime, timedelta
 
 app.config['MAIL_SERVER'] = module_config.smtp_server
 app.config['MAIL_PORT'] = module_config.smtp_port
@@ -66,20 +67,18 @@ class EmailController:
         )
 
         result = mail_controller.send(msg)
-
         return True
 
     def validate_challenge( self, challenge ):
         user = user_controller.get_uuid( challenge.assoc_uuid )
+        if user is None:
+            return False
+        if challenge.creation_date > (datetime.now() - timedelta(days=1)):
+            self.delete_challenge( challenge )
+            return False
         user.email_verified = True
         db.session.commit()
         return True
-
-    def get_all_challenges(self):
-        challenges = EmailValidationModel.query.all()
-        if challenges is None:
-            return None
-        return challenges
 
     def get_challenge_by_token( self, token ):
         challenge = EmailValidationModel.query.filter_by( validation_token=token ).first()
@@ -87,8 +86,13 @@ class EmailController:
             return None
         return challenge
 
-    def delete_challenge_token(self):
-        pass
+    def delete_challenge( self, challenge ):
+        try:
+            db.session.delete(challenge)
+            db.session.commit()
+        except exc.PendingRollbackError:
+            return False
+        return True
 
 
 email_controller = EmailController()

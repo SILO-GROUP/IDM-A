@@ -5,7 +5,7 @@ from modules.Groups.Decorators import require_group, in_group_or_superuser
 from modules.Groups.Config import module_config as group_mappings
 from modules.Emails.Controller import email_controller
 from modules.Users.Controller import user_controller
-from modules.Emails.ViewSchemas import email_challenge_schema
+from modules.Emails.ViewSchemas import email_challenge_schema, email_challenge_schemas
 from flask import g
 
 
@@ -17,6 +17,9 @@ class EmailValidation(Resource):
         '''Create or update a validation challenge.'''
         target_user = user_controller.get_uuid( uuid )
         if target_user is not None:
+            if target_user.email_verified:
+                return "This account's email address is already verified.", 304
+
             new_challenge = email_controller.create_challenge( uuid=target_user.uuid )
 
             if new_challenge is None:
@@ -37,20 +40,5 @@ class EmailValidation(Resource):
 
         if email_controller.validate_challenge( challenge ):
             return "Challenge validated.", 200
-
-        return "Not implemented.", 500
-
-
-@api.route('/challenge/list')
-class EmailValidation(Resource):
-    @require_group( group_mappings.EMAILS_LIST_ALL )
-    def get(self):
-        '''List all validation challenges.'''
-        return "Not implemented.", 500
-
-
-@api.route('/challenge/delete/<token>')
-class EmailValidation(Resource):
-    def get(self):
-        '''Delete a validation challenge.'''
-        return "Not implemented.", 500
+        else:
+            return "Could not validate.", 401
